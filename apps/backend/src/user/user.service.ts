@@ -9,14 +9,14 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<UserEntity[]> {
-    return this.usersRepository.find();
+    return this.usersRepository.find({ select: ["id", "name", "email"] });
   }
 
   async findById(id: string): Promise<UserEntity> {
-    return this.usersRepository.findOneBy({ id });
+    return this.usersRepository.findOne({ where: { id }, select: ["id", "name", "email"] });
   }
 
   async create(user: UserDTO): Promise<UserEntity> {

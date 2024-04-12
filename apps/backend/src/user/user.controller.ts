@@ -67,7 +67,9 @@ export class UserController {
       .create(user)
       .then((res: UserEntity) => {
         // Created (201)
-        return response.status(201).send(UserEntity.paserUserEntityToDTO(res));
+        const _res = UserEntity.paserUserEntityToDTO(res);
+        delete _res.password;
+        return response.status(201).send();
       })
       .catch((err) => {
         // Error (500)
@@ -84,7 +86,7 @@ export class UserController {
     // Bad request (400)
     if (!user && !id)
       return response.status(400).send('id and user is required');
-    // TODO: Sanitize user
+    // TODO: Sanite user
     this.userService
       .update(id, user)
       .then((res: UserEntity) => {
