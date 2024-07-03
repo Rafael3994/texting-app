@@ -6,6 +6,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entity/user.entity.dto';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+require('dotenv').config();
+
+const env = {
+  HOST: process.env.HOST,
+  PORT: +process.env.PORT,
+  USER_NAME: process.env.USER_NAME,
+  PASSWORD: process.env.PASSWORD,
+  DATABASE: process.env.DATABASE
+}
+
+console.log('process.env', env.HOST);
 
 @Module({
   imports: [
@@ -15,11 +26,11 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'testing-app',
+      host: env.HOST,
+      port: env.PORT,
+      username: env.USER_NAME,
+      password: env.PASSWORD,
+      database: env.DATABASE,
       entities: [UserEntity],
       synchronize: false,
     }),
@@ -27,4 +38,4 @@ import { join } from 'path';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
