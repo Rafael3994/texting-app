@@ -25,5 +25,8 @@
   ],
   "devDependencies": {
     "turbo": "^1.12.5"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1"
   }
 }

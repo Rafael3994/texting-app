@@ -14,7 +14,7 @@ import { UserEntity } from './entity/user.entity.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Get('')
   async findAll(@Res() response): Promise<any> {
@@ -30,7 +30,7 @@ export class UserController {
         // With content (200)
         return response
           .status(200)
-          .send(res.map((user) => UserEntity.paserUserEntityToDTO(user)));
+          .send(res.map((user) => UserEntity.parserUserEntityToDTO(user)));
       })
       .catch((err) => {
         // Error (500)
@@ -50,7 +50,7 @@ export class UserController {
           return response.status(404).send('User not found');
         }
         // With content (200)
-        return response.status(200).send(UserEntity.paserUserEntityToDTO(res));
+        return response.status(200).send(UserEntity.parserUserEntityToDTO(res));
       })
       .catch((err) => {
         // Error (500)
@@ -62,14 +62,13 @@ export class UserController {
   async create(@Res() response, @Body() user: UserDTO): Promise<any> {
     // Bad request (400)
     if (!user) return response.status(400).send('user is required');
-    // TODO: Sanitize user
+    if (!this.isSanitedUser(user)) throw new Error('Variables have bad sintaxis. Review it');
     this.userService
       .create(user)
       .then((res: UserEntity) => {
         // Created (201)
-        const _res = UserEntity.paserUserEntityToDTO(res);
-        delete _res.password;
-        return response.status(201).send();
+        let _res = UserEntity.parserUserPucblicEntityToDTO(res);
+        return response.status(201).send(_res);
       })
       .catch((err) => {
         // Error (500)
@@ -84,14 +83,14 @@ export class UserController {
     @Body() user: UserDTO,
   ): Promise<any> {
     // Bad request (400)
-    if (!user && !id)
-      return response.status(400).send('id and user is required');
-    // TODO: Sanite user
+    if (!user && !id) return response.status(400).send('id and user is required');
+
+    if (!this.isSanitedUser(user)) throw new Error('Variables have bad sintaxis. Review it');
     this.userService
       .update(id, user)
       .then((res: UserEntity) => {
         // Created (201)
-        return response.status(201).send(UserEntity.paserUserEntityToDTO(res));
+        return response.status(201).send(UserEntity.parserUserEntityToDTO(res));
       })
       .catch((err) => {
         // Error (500)
@@ -111,11 +110,19 @@ export class UserController {
           return response.status(404).send('User not found');
         }
         // With content (200)
-        return response.status(200).send(UserEntity.paserUserEntityToDTO(res));
+        return response.status(200).send(UserEntity.parserUserEntityToDTO(res));
       })
       .catch((err) => {
         // Error (500)
         return response.status(500).send('err: ' + err);
       });
   }
+
+  isSanitedUser = (user) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(user.email) || user.name.length < 3 || user.password.length < 3) {
+      return false;
+    }
+    return true;
+  };
 }

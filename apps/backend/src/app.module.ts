@@ -16,8 +16,6 @@ const env = {
   DATABASE: process.env.DATABASE
 }
 
-console.log('process.env', env.HOST);
-
 @Module({
   imports: [
     UserModule,
