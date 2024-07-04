@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/entity/user.entity.dto';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ChatModule } from './chat/chat.module';
+import { TextModule } from './text/text.module';
 require('dotenv').config();
 
 const env = {
@@ -32,6 +34,8 @@ const env = {
       entities: [UserEntity],
       synchronize: false,
     }),
+    ChatModule,
+    TextModule,
   ],
   controllers: [AppController],
   providers: [AppService],
