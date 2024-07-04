@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
-import { UserEntity } from './entity/user.entity.dto';
+import { UserEntity } from './entity/user.entity';
 
 @Controller('user')
 export class UserController {
