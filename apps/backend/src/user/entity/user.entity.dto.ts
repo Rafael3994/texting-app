@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserDTO } from '../dto/user.dto';
 import { UserPublicDTO } from '../dto/user.public.dto';
 
-@Entity({ name: 'users' })
+@Entity({ name: 'user' })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
