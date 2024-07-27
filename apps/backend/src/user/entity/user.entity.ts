@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserDTO } from '../dto/user.dto';
 import { UserPublicDTO } from '../dto/user.public.dto';
+import { ChatEntity } from 'src/chat/entity/chat.entity.dto';
+import { TextEntity } from 'src/text/entity/text.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -18,6 +20,15 @@ export class UserEntity {
 
   @Column({ name: 'created_time', default: () => 'CURRENT_TIMESTAMP' })
   createdTime: Date;
+
+  @OneToMany(() => ChatEntity, chat => chat.user1)
+  chatsAsUser1: ChatEntity[];
+
+  @OneToMany(() => ChatEntity, chat => chat.user2)
+  chatsAsUser2: ChatEntity[];
+
+  @OneToMany(() => TextEntity, text => text.user)
+  texts: Text[];
 
   static parserUserEntityToDTO = (userEntity: UserEntity): UserDTO => {
     const userDTO: UserDTO = {

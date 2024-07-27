@@ -8,6 +8,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ChatModule } from './chat/chat.module';
 import { TextModule } from './text/text.module';
+import { ChatEntity } from './chat/entity/chat.entity.dto';
+import { TextEntity } from './text/entity/text.entity';
 require('dotenv').config();
 
 const env = {
@@ -21,6 +23,8 @@ const env = {
 @Module({
   imports: [
     UserModule,
+    ChatModule,
+    TextModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../', 'frontend/dist'),
     }),
@@ -31,11 +35,9 @@ const env = {
       username: env.USER_NAME,
       password: env.PASSWORD,
       database: env.DATABASE,
-      entities: [UserEntity],
+      entities: [UserEntity, ChatEntity, TextEntity],
       synchronize: false,
     }),
-    ChatModule,
-    TextModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,11 +20,11 @@ export class TextEntity {
     @CreateDateColumn({ type: 'timestamp', name: 'created_time', default: () => 'CURRENT_TIMESTAMP' })
     createdTime: Date;
 
-    @ManyToOne(() => ChatEntity)
+    @ManyToOne(() => ChatEntity, chat => chat.texts)
     @JoinColumn({ name: 'chat_id' })
     chat: ChatEntity;
 
-    @ManyToOne(() => UserEntity)
+    @ManyToOne(() => UserEntity, user => user.texts)
     @JoinColumn({ name: 'user_id' })
     user: UserEntity;
 

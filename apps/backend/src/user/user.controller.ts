@@ -11,111 +11,122 @@ import {
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
+import { isNotFound } from 'src/utils/classificatedHttpCode';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) { }
 
   @Get('')
-  async findAll(@Res() response): Promise<any> {
-    this.userService
-      .findAll()
-      .then((res: UserEntity[]) => {
-        // Without content (204)
-        if (res.length === 0) {
+  async findAllUsers(@Res() response): Promise<any> {
+    try {
+      this.userService
+        .findAllUsers()
+        .then((res: UserEntity[]) => {
+          if (!isNotFound(res)) return response.status(204);
           return response
-            .status(204)
-            .send([]);
-        }
-        // With content (200)
-        return response
-          .status(200)
-          .send(res.map((user) => UserEntity.parserUserEntityToDTO(user)));
-      })
-      .catch((err) => {
-        // Error (500)
-        return response.status(500).send('err: ' + err);
-      });
+            .status(200)
+            .send(
+              res.map((user) => UserEntity.parserUserEntityToDTO(user))
+            );
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    } catch (err) {
+      console.log('findAll', err);
+      return response.status(500).send('Something was bad.');
+    }
   }
 
   @Get(':id')
-  async findById(@Res() response, @Param('id') id: string): Promise<any> {
-    // Bad request (400)
-    if (!id) return response.status(400).send('id is required');
-    this.userService
-      .findById(id)
-      .then((res: UserEntity) => {
-        // Not Found (404)
-        if (!res) {
-          return response.status(404).send('User not found');
-        }
-        // With content (200)
-        return response.status(200).send(UserEntity.parserUserEntityToDTO(res));
-      })
-      .catch((err) => {
-        // Error (500)
-        return response.status(500).send('err: ' + err);
-      });
+  async findUserById(@Res() response, @Param('id') id: string): Promise<any> {
+    try {
+
+      if (!id) return response.status(400).send('Incorrect data.');
+
+      this.userService
+        .findUserById(id)
+        .then((res: UserEntity) => {
+          if (!isNotFound(res)) return response.status(404).send('Not found.');
+          return response
+            .status(200)
+            .send(UserEntity.parserUserEntityToDTO(res));
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+
+    } catch (err) {
+      console.log('findUserById', err);
+      return response.status(500).send('Something was bad.');
+    }
   }
 
   @Post('')
-  async create(@Res() response, @Body() user: UserDTO): Promise<any> {
-    // Bad request (400)
-    if (!user) return response.status(400).send('user is required');
-    if (!this.isSanitedUser(user)) throw new Error('Variables have bad sintaxis. Review it');
-    this.userService
-      .create(user)
-      .then((res: UserEntity) => {
-        // Created (201)
-        let _res = UserEntity.parserUserPucblicEntityToDTO(res);
-        return response.status(201).send(_res);
-      })
-      .catch((err) => {
-        // Error (500)
-        return response.status(500).send('err: ' + err);
-      });
+  async createUser(@Res() response, @Body() user: UserDTO): Promise<any> {
+    try {
+
+      if (!user || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
+
+      this.userService
+        .createUser(user)
+        .then((res: UserEntity) => {
+          let _res = UserEntity.parserUserPucblicEntityToDTO(res);
+          return response.status(201).send(_res);
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+
+    } catch (err) {
+      console.log('createUser', err);
+      return response.status(500).send('Something was bad.');
+    }
   }
 
   @Put('')
-  async update(
+  async updateUser(
     @Res() response,
     @Param('id') id: string,
     @Body() user: UserDTO,
   ): Promise<any> {
-    // Bad request (400)
-    if (!user && !id) return response.status(400).send('id and user is required');
+    try {
+      if (!user || !id || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
 
-    if (!this.isSanitedUser(user)) throw new Error('Variables have bad sintaxis. Review it');
-    this.userService
-      .update(id, user)
-      .then((res: UserEntity) => {
-        // Created (201)
-        return response.status(201).send(UserEntity.parserUserEntityToDTO(res));
-      })
-      .catch((err) => {
-        // Error (500)
-        return response.status(500).send('err: ' + err);
-      });
+      this.userService
+        .updateUser(id, user)
+        .then((res: UserEntity) => {
+          return response.status(201).send(UserEntity.parserUserEntityToDTO(res));
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    } catch (err) {
+      console.log('updateUser', err);
+      return response.status(500).send('Something was bad.');
+    }
   }
 
   @Delete(':id')
-  async deleteById(@Res() response, @Param('id') id: string): Promise<any> {
-    // Bad request (400)
-    if (!id) return response.status(400).send('id is required');
-    this.userService
-      .delete(id)
-      .then((res: UserEntity) => {
-        // Not Found (404)
-        if (!res) {
-          return response.status(404).send('User not found');
-        }
-        // With content (200)
-        return response.status(200).send(UserEntity.parserUserEntityToDTO(res));
-      })
-      .catch((err) => {
-        // Error (500)
-        return response.status(500).send('err: ' + err);
-      });
+  async deleteUserById(@Res() response, @Param('id') id: string): Promise<any> {
+    try {
+      if (!id) return response.status(400).send('Incorrect data.');
+      this.userService
+        .deleteUser(id)
+        .then((res: UserEntity) => {
+          if (!isNotFound(res)) return response.status(404).send('Not found.');
+          return response
+            .status(200)
+            .send(UserEntity.parserUserEntityToDTO(res));
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    } catch (err) {
+      console.log('deleteUserById', err);
+      return response.status(500).send('Something was bad.');
+    }
   }
 
   isSanitedUser = (user) => {

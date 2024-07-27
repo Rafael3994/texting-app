@@ -14,15 +14,15 @@ export class UserService {
     private usersRepository: Repository<UserEntity>,
   ) { }
 
-  async findAll(): Promise<UserEntity[]> {
+  async findAllUsers(): Promise<UserEntity[]> {
     return this.usersRepository.find({ select: ["id", "name", "email"] });
   }
 
-  async findById(id: string): Promise<UserEntity> {
-    return this.usersRepository.findOne({ where: { id }, select: ["id", "name", "email"] });
+  async findUserById(id: string): Promise<UserEntity> {
+    return this.usersRepository.findOne({ where: { id }, select: ["id", "name", "email"] })
   }
 
-  async create(user: UserDTO): Promise<UserEntity> {
+  async createUser(user: UserDTO): Promise<UserEntity> {
     const newUser = new UserEntity();
     newUser.name = user.name;
     newUser.email = user.email;
@@ -31,7 +31,7 @@ export class UserService {
     return this.usersRepository.save(newUser);
   }
 
-  async update(id: string, user: UserDTO): Promise<UserEntity> {
+  async updateUser(id: string, user: UserDTO): Promise<UserEntity> {
     const userFound = await this.usersRepository.findOneBy({ id });
     if (!userFound) return null;
     userFound.name = user.name;
@@ -40,10 +40,15 @@ export class UserService {
     return this.usersRepository.save(userFound);
   }
 
-  async delete(id: string): Promise<UserEntity> {
+  async deleteUser(id: string): Promise<UserEntity> {
     const userFound = await this.usersRepository.findOneBy({ id });
     if (!userFound) return null;
     await this.usersRepository.delete(id);
     return userFound;
   }
+
+  // isExistUser(user: UserEntity | null) {
+  //   if (!user || null) throw new Error(`User didn't found`);
+  //   return user;
+  // }
 }
