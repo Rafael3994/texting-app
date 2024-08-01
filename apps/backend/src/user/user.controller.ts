@@ -12,6 +12,7 @@ import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
+import { UserUpdatedDTO } from './dto/user.updated.dto';
 
 @Controller('user')
 export class UserController {
@@ -69,6 +70,9 @@ export class UserController {
 
       if (!user || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
 
+      if (await this.userService.findUserByEmail(user.email))
+        return response.status(404).send(`It's already exist`);
+
       this.userService
         .createUser(user)
         .then((res: UserEntity) => {
@@ -85,14 +89,17 @@ export class UserController {
     }
   }
 
-  @Put('')
+  @Put(':id')
   async updateUser(
     @Res() response,
     @Param('id') id: string,
-    @Body() user: UserDTO,
+    @Body() user: UserUpdatedDTO,
   ): Promise<any> {
     try {
       if (!user || !id || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
+
+      if (!(await this.userService.findUserById(id)))
+        return response.status(404).send('Not found.');
 
       this.userService
         .updateUser(id, user)
@@ -131,7 +138,7 @@ export class UserController {
 
   isSanitedUser = (user) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(user.email) || user.name.length < 3 || user.password.length < 3) {
+    if ((user.email && !regex.test(user.email)) || user.name.length < 3 || user.password.length < 3) {
       return false;
     }
     return true;

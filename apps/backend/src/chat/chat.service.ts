@@ -11,10 +11,10 @@ export class ChatService {
         private chatRepository: Repository<ChatEntity>
     ) { }
 
-    findOne(chatId: string) {
+    findChatById(chatId: string, relations: string[] = []) {
         return this.chatRepository.findOne({
             where: { id: chatId },
-            relations: ['user1', 'user2', 'texts']
+            relations
         });
     }
 
@@ -22,14 +22,14 @@ export class ChatService {
         return this.chatRepository.find();
     }
 
-    create(chat: ChatDTO): Promise<ChatEntity> {
+    createChat(chat: ChatDTO): Promise<ChatEntity> {
         const newChat = new ChatEntity();
         newChat.userId1 = chat.userId1;
         newChat.userId2 = chat.userId2;
         return this.chatRepository.save(newChat);
     }
 
-    async update(id: string, chat: ChatDTO): Promise<ChatEntity> {
+    async updateChat(id: string, chat: ChatDTO): Promise<ChatEntity> {
         const chatFound = await this.chatRepository.findOneBy({ id });
         if (!chatFound) return null;
         chatFound.userId1 = chat.userId1;
