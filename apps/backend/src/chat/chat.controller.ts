@@ -4,7 +4,6 @@ import { response } from 'express';
 import { ChatService } from './chat.service';
 import { ChatEntity } from './entity/chat.entity.dto';
 import { UserService } from 'src/user/user.service';
-import { error, log } from 'console';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
 
 @Controller('chat')
@@ -34,7 +33,7 @@ export class ChatController {
                     throw new Error(err);
                 });
         } catch (err) {
-            console.log('findChatById', err);
+            this.logger.error('findChatById', err);
             return response.status(500).send('Something was bad.');
         }
     }
@@ -61,7 +60,7 @@ export class ChatController {
                     throw new Error(err);
                 });
         } catch (err) {
-            console.log('createChat', err);
+            this.logger.error('createChat', err);
             return response.status(500).send('Something was bad.');
         }
     }
@@ -78,6 +77,9 @@ export class ChatController {
             const foundChat = await this.chatService.findChatById(id);
             if (!foundChat) return response.status(404).send('Not found.');
 
+            if (!(await this.userService.areUsersExists(chat.userId1, chat.userId2)))
+                return response.status(404).send('Not found.');
+
             const newChat = { ...ChatEntity.parserChatEntityToDTO(foundChat), ...chat }
 
             if (!(await this.userService.areUsersExists(newChat.userId1, newChat.userId2)))
@@ -92,7 +94,7 @@ export class ChatController {
                     throw new Error(err);
                 });
         } catch (err) {
-            console.log('createChat', err);
+            this.logger.error('createChat', err);
             return response.status(500).send('err: ' + err);
         }
     }
@@ -102,17 +104,26 @@ export class ChatController {
         @Res() response,
         @Param('id') id: string
     ): Promise<any> {
-        if (!id) return response.status(400).send('Incorrect data.');
-        this.chatService
-            .delete(id)
-            .then((res: ChatEntity) => {
-                if (!res) {
-                    return response.status(404).send('Chat not found');
-                }
-                return response.status(200).send(ChatEntity.parserChatEntityToDTO(res));
-            })
-            .catch((err) => {
-                return response.status(500).send('err: ' + err);
-            });
+        try {
+            if (!id) return response.status(400).send('Incorrect data.');
+
+            const foundChat = await this.chatService.findChatById(id)
+            if (!foundChat) return response.status(404).send('Not found.');
+
+            this.chatService
+                .deleteChat(id)
+                .then((res: number) => {
+                    if (res > 0) return response.status(200).send(
+                        ChatEntity.parserChatEntityToDTO(foundChat)
+                    );
+                    return response.status(404).send('Not Delete.');
+                })
+                .catch((err) => {
+                    throw new Error(err);
+                });
+        } catch (error) {
+            this.logger.error('deleteById', error);
+            response.status(500).send('Something was bad.');
+        }
     }
 }

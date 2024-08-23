@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
   Put,
@@ -16,7 +17,10 @@ import { UserUpdatedDTO } from './dto/user.updated.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private logger: Logger,
+  ) { }
 
   @Get('')
   async findAllUsers(@Res() response): Promise<any> {
@@ -35,7 +39,7 @@ export class UserController {
           throw new Error(err);
         });
     } catch (err) {
-      console.log('findAllUsers', err);
+      this.logger.error('findAllUsers', err);
       return response.status(500).send('Something was bad.');
     }
   }
@@ -59,7 +63,7 @@ export class UserController {
         });
 
     } catch (err) {
-      console.log('findUserById', err);
+      this.logger.error('findUserById', err);
       return response.status(500).send('Something was bad.');
     }
   }
@@ -84,7 +88,7 @@ export class UserController {
         });
 
     } catch (err) {
-      console.log('createUser', err);
+      this.logger.error('createUser', err);
       return response.status(500).send('Something was bad.');
     }
   }
@@ -98,11 +102,17 @@ export class UserController {
     try {
       if (!user || !id || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
 
-      if (!(await this.userService.findUserById(id)))
+      const foundUser = await this.userService.findUserById(id)
+      if (!foundUser)
         return response.status(404).send('Not found.');
 
       this.userService
-        .updateUser(id, user)
+        .updateUser(
+          {
+            ...foundUser,
+            ...user,
+          }
+        )
         .then((res: UserEntity) => {
           return response.status(201).send(UserEntity.parserUserEntityToDTO(res));
         })
@@ -110,7 +120,7 @@ export class UserController {
           throw new Error(err);
         });
     } catch (err) {
-      console.log('updateUser', err);
+      this.logger.error('updateUser', err);
       return response.status(500).send('Something was bad.');
     }
   }
@@ -119,19 +129,22 @@ export class UserController {
   async deleteUserById(@Res() response, @Param('id') id: string): Promise<any> {
     try {
       if (!id) return response.status(400).send('Incorrect data.');
+
+      const foundUser = await this.userService.findUserById(id)
+      if (!foundUser)
+        return response.status(404).send('Not found.');
+
       this.userService
         .deleteUser(id)
-        .then((res: UserEntity) => {
-          if (!isNotFound(res)) return response.status(404).send('Not found.');
-          return response
-            .status(200)
-            .send(UserEntity.parserUserEntityToDTO(res));
+        .then((res) => {
+          if (res > 0) return response.status(200).send(UserEntity.parserUserEntityToDTO(foundUser));
+          return response.status(404).send('Not Delete.');
         })
         .catch((err) => {
           throw new Error(err);
         });
     } catch (err) {
-      console.log('deleteUserById', err);
+      this.logger.error('deleteUserById', err);
       return response.status(500).send('Something was bad.');
     }
   }

@@ -29,18 +29,11 @@ export class ChatService {
         return this.chatRepository.save(newChat);
     }
 
-    async updateChat(id: string, chat: ChatDTO): Promise<ChatEntity> {
-        const chatFound = await this.chatRepository.findOneBy({ id });
-        if (!chatFound) return null;
-        chatFound.userId1 = chat.userId1;
-        chatFound.userId2 = chat.userId2;
+    async updateChat(id: string, chatFound: ChatDTO): Promise<ChatEntity> {
         return this.chatRepository.save(chatFound);
     }
 
-    async delete(id: string): Promise<ChatEntity> {
-        const userFound = await this.chatRepository.findOneBy({ id });
-        if (!userFound) return null;
-        await this.chatRepository.delete(id);
-        return userFound;
+    async deleteChat(id: string): Promise<number> {
+        return (await this.chatRepository.delete(id)).affected;
     }
 }

@@ -36,19 +36,12 @@ export class UserService {
     return this.usersRepository.save(newUser);
   }
 
-  async updateUser(id: string, user: UserUpdatedDTO): Promise<UserEntity> {
-    const userFound = await this.usersRepository.findOneBy({ id });
-    if (!userFound) return null;
-    userFound.name = user.name;
-    userFound.password = user.password;
-    return this.usersRepository.save(userFound);
+  async updateUser(user: UserUpdatedDTO): Promise<UserEntity> {
+    return this.usersRepository.save(user);
   }
 
-  async deleteUser(id: string): Promise<UserEntity> {
-    const userFound = await this.usersRepository.findOneBy({ id });
-    if (!userFound) return null;
-    await this.usersRepository.delete(id);
-    return userFound;
+  async deleteUser(id: string): Promise<number> {
+    return (await this.usersRepository.delete(id)).affected;
   }
 
   async areUsersExists(userId1, userId2) {
