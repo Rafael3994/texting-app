@@ -35,7 +35,7 @@ export class UserController {
           throw new Error(err);
         });
     } catch (err) {
-      console.log('findAll', err);
+      console.log('findAllUsers', err);
       return response.status(500).send('Something was bad.');
     }
   }

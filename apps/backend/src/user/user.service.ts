@@ -54,8 +54,6 @@ export class UserService {
   async areUsersExists(userId1, userId2) {
     const user1 = await this.findUserById(userId1);
     const user2 = await this.findUserById(userId2);
-    console.log('user1', user1);
-    console.log('user2', user2);
 
     if (!user1 || !user2) return false;
     return true;

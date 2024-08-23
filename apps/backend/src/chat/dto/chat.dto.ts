@@ -1,3 +1,4 @@
+import { TextPublicDTO } from "src/text/dto/text.public.dto";
 import { UserDTO } from "src/user/dto/user.dto";
 
 export class ChatDTO {
@@ -5,6 +6,7 @@ export class ChatDTO {
     userId1: string;
     userId2: string;
     createdTime: Date;
-    user1: UserDTO;
-    user2: UserDTO;
+    user1?: UserDTO;
+    user2?: UserDTO;
+    texts?: TextPublicDTO[];
 }

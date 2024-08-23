@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Res } from '@nestjs/common';
 import { ChatDTO } from './dto/chat.dto';
 import { response } from 'express';
 import { ChatService } from './chat.service';
@@ -12,6 +12,7 @@ export class ChatController {
     constructor(
         private chatService: ChatService,
         private userService: UserService,
+        private logger: Logger,
     ) { }
 
     @Get(':id')

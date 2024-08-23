@@ -38,6 +38,7 @@ export class ChatEntity {
             createdTime: chatEntity.createdTime,
             user1: chatEntity.user1 && UserEntity.parserUserEntityToDTO(chatEntity.user1),
             user2: chatEntity.user1 && UserEntity.parserUserEntityToDTO(chatEntity.user2),
+            texts: chatEntity.texts && chatEntity.texts.map((text: TextEntity) => TextEntity.parserTextPucblicEntityToDTO(text))
         };
         return userDTO;
     };

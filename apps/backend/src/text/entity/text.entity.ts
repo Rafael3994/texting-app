@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, Jo
 import { UserEntity } from 'src/user/entity/user.entity';
 import { ChatEntity } from 'src/chat/entity/chat.entity.dto';
 import { TextDTO } from '../dto/text.dto';
+import { TextPublicDTO } from '../dto/text.public.dto';
 
 @Entity({ name: 'text' })
 export class TextEntity {
@@ -38,5 +39,16 @@ export class TextEntity {
             chat: textEntity.chat && ChatEntity.parserChatEntityToDTO(textEntity.chat),
         };
         return textDTO;
-      };
+    };
+
+    static parserTextPucblicEntityToDTO = (textEntity: TextEntity): TextPublicDTO => {
+        const textDTO: TextPublicDTO = {
+            id: textEntity.id,
+            userId: textEntity.userId,
+            chatId: textEntity.chatId,
+            text: textEntity.text,
+            createdTime: textEntity.createdTime,
+        };
+        return textDTO;
+    }
 }

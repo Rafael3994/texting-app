@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +11,7 @@ import { UserModule } from 'src/user/user.module';
     UserModule
   ],
   controllers: [ChatController],
-  providers: [ChatService]
+  providers: [ChatService, Logger],
+  exports: [ChatService],
 })
 export class ChatModule { }
