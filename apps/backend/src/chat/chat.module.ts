@@ -4,6 +4,8 @@ import { ChatService } from './chat.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity.dto';
 import { UserModule } from 'src/user/user.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Module({
   imports: [
@@ -11,7 +13,10 @@ import { UserModule } from 'src/user/user.module';
     UserModule
   ],
   controllers: [ChatController],
-  providers: [ChatService, Logger],
+  providers: [
+    ChatService,
+    Logger,
+  ],
   exports: [ChatService],
 })
 export class ChatModule { }

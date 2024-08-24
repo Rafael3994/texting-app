@@ -1,6 +1,8 @@
-import { Body, Controller, Logger, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { authDTO } from './dto/auth.dto';
+import { AuthGuard } from './auth.guard';
+import { Public } from './public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -9,6 +11,7 @@ export class AuthController {
         private logger: Logger,
     ) { }
 
+    @Public()
     @Post('login')
     async signIn(
         @Res() response,
@@ -20,7 +23,13 @@ export class AuthController {
             );
         } catch (error) {
             this.logger.error('signIn', error);
-            return response.status(500).send('Something was bad.');
+            return response.status(500).send(error.message);
         }
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('profile')
+    getProfile(@Request() req) {
+        return req.user;
     }
 }

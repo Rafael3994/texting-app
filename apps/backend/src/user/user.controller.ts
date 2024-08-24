@@ -14,6 +14,7 @@ import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -68,6 +69,7 @@ export class UserController {
     }
   }
 
+  @Public()
   @Post('')
   async createUser(@Res() response, @Body() user: UserDTO): Promise<any> {
     try {
