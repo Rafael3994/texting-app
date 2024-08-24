@@ -5,6 +5,7 @@ import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { BlacklistRefreshTokenModule } from 'src/blacklist-refresh-token/blacklist-refresh-token.module';
 require('dotenv').config();
 
 @Module({
@@ -20,6 +21,7 @@ require('dotenv').config();
   ],
   imports: [
     UserModule,
+    BlacklistRefreshTokenModule,
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY_JWT,

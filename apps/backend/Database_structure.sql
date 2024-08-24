@@ -46,3 +46,10 @@ CREATE TABLE `text` (
   CONSTRAINT `text_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `blacklist_refresh_token`;
+CREATE TABLE `blacklist_refresh_token` (
+    id CHAR(36) NOT NULL,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

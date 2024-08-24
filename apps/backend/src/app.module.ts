@@ -11,6 +11,8 @@ import { TextModule } from './text/text.module';
 import { ChatEntity } from './chat/entity/chat.entity.dto';
 import { TextEntity } from './text/entity/text.entity';
 import { AuthModule } from './auth/auth.module';
+import { BlacklistRefreshTokenModule } from './blacklist-refresh-token/blacklist-refresh-token.module';
+import { BlacklistRefreshTokenEntity } from './blacklist-refresh-token/entity/blacklist-refresh-token.entity';
 require('dotenv').config();
 
 const env = {
@@ -36,10 +38,16 @@ const env = {
       username: env.USER_NAME,
       password: env.PASSWORD,
       database: env.DATABASE,
-      entities: [UserEntity, ChatEntity, TextEntity],
+      entities: [
+        UserEntity,
+        ChatEntity,
+        TextEntity,
+        BlacklistRefreshTokenEntity,
+      ],
       synchronize: false,
     }),
     AuthModule,
+    BlacklistRefreshTokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

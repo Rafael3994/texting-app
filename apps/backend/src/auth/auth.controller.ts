@@ -1,13 +1,15 @@
-import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request, Req } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request, Req, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { authDTO } from './dto/auth.dto';
 import { AuthGuard } from './auth.guard';
 import { Public } from './public.decorator';
+import { BlacklistRefreshTokenService } from 'src/blacklist-refresh-token/blacklist-refresh-token.service';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private authService: AuthService,
+        private blackListRefreshTokenService: BlacklistRefreshTokenService,
         private logger: Logger,
     ) { }
 
@@ -34,10 +36,20 @@ export class AuthController {
         @Res() response,
     ) {
         try {
+            const refreshToken = request.headers['authorization']?.split(' ')[1];
+            if (!(await this.blackListRefreshTokenService.isTokenBlacklisted(refreshToken)))
+                return response.status(401).send({
+                    "statusCode": 401,
+                    "message": "Unauthorized"
+                });
+
+            await this.blackListRefreshTokenService.createBlacklistToken(refreshToken);
+
             return response.status(200).send(
                 await this.authService.refreshToken(
-                    request.headers['authorization']?.split(' ')[1]
-                ));
+                    refreshToken
+                )
+            );
         } catch (error) {
             this.logger.error('refreshToken', error);
             return response.status(500).send(error.message);

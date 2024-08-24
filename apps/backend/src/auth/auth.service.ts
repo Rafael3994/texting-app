@@ -29,7 +29,6 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string) {
-        // TODO: HACER QUE SEA INVALIDO EL REFRESH USADO
         const user = this.jwtService.verify(
             refreshToken,
             { secret: process.env.SECRET_REFRESH_KEY_JWT }
