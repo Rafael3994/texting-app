@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { TextModule } from './text/text.module';
 import { ChatEntity } from './chat/entity/chat.entity.dto';
 import { TextEntity } from './text/entity/text.entity';
+import { AuthModule } from './auth/auth.module';
 require('dotenv').config();
 
 const env = {
@@ -38,6 +39,7 @@ const env = {
       entities: [UserEntity, ChatEntity, TextEntity],
       synchronize: false,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

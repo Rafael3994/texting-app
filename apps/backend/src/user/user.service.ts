@@ -19,12 +19,20 @@ export class UserService {
     return this.usersRepository.find({ select: ["id", "name", "email"] });
   }
 
+  async findUserByName(username: string): Promise<UserEntity> {
+    return await this.usersRepository.findOne({ where: { name: username } });
+
+  }
+
   async findUserById(id: string): Promise<UserEntity> {
     return this.usersRepository.findOne({ where: { id }, select: ["id", "name", "email"] })
   }
 
-  async findUserByEmail(emial: string): Promise<UserEntity> {
-    return this.usersRepository.findOne({ where: { email: emial }, select: ["id", "name", "email"] })
+  async findUserByEmail(
+    emial: string,
+    select: (keyof UserEntity)[] = ["id", "name", "email"]
+  ): Promise<UserEntity> {
+    return this.usersRepository.findOne({ where: { email: emial }, select })
   }
 
   async createUser(user: UserDTO): Promise<UserEntity> {

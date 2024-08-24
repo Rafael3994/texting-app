@@ -82,9 +82,6 @@ export class ChatController {
 
             const newChat = { ...ChatEntity.parserChatEntityToDTO(foundChat), ...chat }
 
-            if (!(await this.userService.areUsersExists(newChat.userId1, newChat.userId2)))
-                return response.status(404).send('Not found.');
-
             this.chatService
                 .updateChat(id, newChat)
                 .then((res: ChatEntity) => {
