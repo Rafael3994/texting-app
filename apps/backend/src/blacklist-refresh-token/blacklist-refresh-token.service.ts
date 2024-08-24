@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { BlacklistRefreshTokenEntity } from './entity/blacklist-refresh-token.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class BlacklistRefreshTokenService {
@@ -14,12 +15,19 @@ export class BlacklistRefreshTokenService {
         return await this.blacklistRepository.save({ token });
     }
 
-    // Verificar si un token está en la lista negra
     async isTokenBlacklisted(token: string): Promise<boolean> {
         const tokenInBlacklist = await this.blacklistRepository.findOne({ where: { token } });
-        console.log('tokenInBlacklist', tokenInBlacklist);
-
         return !!!tokenInBlacklist;
+    }
+
+    @Cron(CronExpression.EVERY_30_MINUTES)
+    async handleCron() {
+        const actualDate = new Date();
+        actualDate.setDate(actualDate.getDate() - 7);
+
+        await this.blacklistRepository.delete({
+            createdTime: LessThan(actualDate),
+        });
     }
 
 }

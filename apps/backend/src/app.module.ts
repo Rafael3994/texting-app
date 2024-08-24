@@ -13,6 +13,8 @@ import { TextEntity } from './text/entity/text.entity';
 import { AuthModule } from './auth/auth.module';
 import { BlacklistRefreshTokenModule } from './blacklist-refresh-token/blacklist-refresh-token.module';
 import { BlacklistRefreshTokenEntity } from './blacklist-refresh-token/entity/blacklist-refresh-token.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+
 require('dotenv').config();
 
 const env = {
@@ -25,6 +27,7 @@ const env = {
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     UserModule,
     ChatModule,
     TextModule,
@@ -48,6 +51,7 @@ const env = {
     }),
     AuthModule,
     BlacklistRefreshTokenModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
