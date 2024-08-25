@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, Logger, Post, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Res, Logger, Post, Body, Put, Delete, UseGuards, Req } from '@nestjs/common';
 import { TextService } from './text.service';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
 import { TextEntity } from './entity/text.entity';
@@ -6,6 +6,11 @@ import { TextDTO } from './dto/text.dto';
 import { UserService } from 'src/user/user.service';
 import { ChatService } from 'src/chat/chat.service';
 import { response } from 'express';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
+import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
+import { isOwn } from 'src/utils/isOwn';
 
 @Controller('text')
 export class TextController {
@@ -19,6 +24,7 @@ export class TextController {
     @Get(':id')
     async findTextById(
         @Res() response,
+        @Req() request,
         @Param('id') id: string
     ): Promise<any> {
         try {
@@ -26,6 +32,11 @@ export class TextController {
             this.textService.findTextById(id)
                 .then((res: TextEntity) => {
                     if (!isNotFound(res)) return response.status(404).send('Not found.');
+                    if (
+                        !isOwnOrAdmin(request.user, res.userId)
+                    ) {
+                        response.status(401).send(`You don't have permission.`);
+                    }
                     return response
                         .status(200)
                         .send(TextEntity.parserTextEntityToDTO(res));
@@ -40,13 +51,26 @@ export class TextController {
     }
 
     @Post('')
-    async createText(@Res() response, @Body() text: TextDTO): Promise<any> {
+    async createText(
+        @Res() response,
+        @Req() request,
+        @Body() text: TextDTO
+    ): Promise<any> {
         try {
 
             if (!this.isSanitedText(text)) return response.status(400).send('Incorrect data.');
 
             if (!(await this.areIdsExists(text.userId, text.chatId)))
                 return response.status(404).send('Data ids Not found.');
+
+            const foundChat = await this.chatService.findChatById(text.chatId)
+            if (
+                !isOwn(request.user, foundChat.userId1)
+                &&
+                !isOwn(request.user, foundChat.userId2)
+            ) {
+                response.status(401).send(`You don't have permission.`);
+            }
 
             this.textService
                 .createText(text)
@@ -65,18 +89,29 @@ export class TextController {
         }
     }
 
+    @Roles('user')
+    @UseGuards(RolesGuard)
     @Put(':id')
     async updateText(
         @Res() response,
+        @Req() request,
         @Param('id') id: string,
         @Body('text') text: string,
     ): Promise<any> {
         try {
-            if (!id) return response.status(400).send('Incorrect data.');
             if (!text) return response.status(400).send('Incorrect data.');
 
             const foundText = await this.textService.findTextById(id);
             if (!foundText) return response.status(404).send('Not found.');
+
+            const foundChat = await this.chatService.findChatById(foundText.chatId)
+            if (
+                !isOwn(request.user, foundChat.userId1)
+                &&
+                !isOwn(request.user, foundChat.userId2)
+            ) {
+                response.status(401).send(`You don't have permission.`);
+            }
 
             this.textService
                 .updateText(
@@ -98,6 +133,7 @@ export class TextController {
     @Delete(':id')
     async deleteText(
         @Res() response,
+        @Req() request,
         @Param('id') id: string
     ) {
         try {
@@ -106,6 +142,15 @@ export class TextController {
             const foundText = await this.textService.findTextById(id);
             if (!foundText)
                 return response.status(404).send('Not found.');
+
+            const foundChat = await this.chatService.findChatById(foundText.chatId)
+            if (
+                !isOwnOrAdmin(request.user, foundChat.userId1)
+                &&
+                !isOwnOrAdmin(request.user, foundChat.userId2)
+            ) {
+                response.status(401).send(`You don't have permission.`);
+            }
 
             this.textService.deleteText(id)
                 .then(res => {

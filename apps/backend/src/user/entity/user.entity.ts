@@ -1,8 +1,14 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserDTO } from '../dto/user.dto';
-import { UserPublicDTO } from '../dto/user.public.dto';
+
 import { ChatEntity } from 'src/chat/entity/chat.entity.dto';
 import { TextEntity } from 'src/text/entity/text.entity';
+import { UserPublicDTO } from '../dto/user.public.dto';
+
+export enum UserRoles {
+  USER = 'user',
+  ADMIN = 'admin',
+}
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -17,6 +23,9 @@ export class UserEntity {
 
   @Column({ length: 255, name: 'password' })
   password: string;
+
+  @Column({ type: 'enum', enum: UserRoles, name: 'role' })
+  role: UserRoles;
 
   @Column({ name: 'created_time', default: () => 'CURRENT_TIMESTAMP' })
   createdTime: Date;
@@ -36,6 +45,7 @@ export class UserEntity {
       name: userEntity.name,
       email: userEntity.email,
       password: userEntity.password,
+      role: userEntity.role,
       createdTime: userEntity.createdTime,
     };
     return userDTO;

@@ -1,10 +1,14 @@
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Logger, Param, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { ChatDTO } from './dto/chat.dto';
 import { response } from 'express';
 import { ChatService } from './chat.service';
 import { ChatEntity } from './entity/chat.entity.dto';
 import { UserService } from 'src/user/user.service';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
+import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
+import { Roles } from 'src/auth/roles.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
 
 @Controller('chat')
 export class ChatController {
@@ -17,6 +21,7 @@ export class ChatController {
     @Get(':id')
     async findChatById(
         @Res() response,
+        @Req() request,
         @Param('id') chatId: string
     ) {
         try {
@@ -25,6 +30,15 @@ export class ChatController {
             this.chatService.findChatById(chatId, ['user1', 'user2', 'texts'])
                 .then(res => {
                     if (!isNotFound(res)) return response.status(404).send('Not found.');
+
+                    if (
+                        !isOwnOrAdmin(request.user, res.userId1)
+                        &&
+                        !isOwnOrAdmin(request.user, res.userId2)
+                    ) {
+                        response.status(401).send(`You don't have permission.`);
+                    }
+
                     return response
                         .status(200)
                         .send(ChatEntity.parserChatEntityToDTO(res));
@@ -66,16 +80,27 @@ export class ChatController {
     }
 
     @Put(':id')
+    @Roles('admin')
+    @UseGuards(RolesGuard)
     async updateChat(
         @Res() response,
+        @Req() request,
         @Param('id') id: string,
         @Body() chat: ChatDTO,
     ): Promise<any> {
         try {
-            if (!chat || !id) return response.status(400).send('Incorrect data.');
+            if (!chat) return response.status(400).send('Incorrect data.');
 
             const foundChat = await this.chatService.findChatById(id);
             if (!foundChat) return response.status(404).send('Not found.');
+
+            if (
+                !isOwnOrAdmin(request.user, foundChat.userId1)
+                &&
+                !isOwnOrAdmin(request.user, foundChat.userId2)
+            ) {
+                throw new ForbiddenException('You do not have permission to access this resource');
+            }
 
             if (!(await this.userService.areUsersExists(chat.userId1, chat.userId2)))
                 return response.status(404).send('Not found.');
@@ -99,13 +124,20 @@ export class ChatController {
     @Delete(':id')
     async deleteById(
         @Res() response,
+        @Req() request,
         @Param('id') id: string
     ): Promise<any> {
         try {
-            if (!id) return response.status(400).send('Incorrect data.');
-
             const foundChat = await this.chatService.findChatById(id)
             if (!foundChat) return response.status(404).send('Not found.');
+
+            if (
+                !isOwnOrAdmin(request.user, foundChat.userId1)
+                &&
+                !isOwnOrAdmin(request.user, foundChat.userId2)
+            ) {
+                throw new ForbiddenException('You do not have permission to access this resource');
+            }
 
             this.chatService
                 .deleteChat(id)

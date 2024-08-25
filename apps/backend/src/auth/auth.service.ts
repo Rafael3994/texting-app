@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { TokensDTO } from './dto/tokens.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { UserDTO } from 'src/user/dto/user.dto';
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -17,7 +18,7 @@ export class AuthService {
 
         const user = await this.usersService.findUserByEmail(
             email,
-            ["id", "name", "email", "password"],
+            ["id", "name", "email", "password", "role"],
         );
 
         const res = await bcrypt.compare(password, user.password)
@@ -37,7 +38,12 @@ export class AuthService {
     }
 
     async genereateTokens(user: UserEntity): Promise<TokensDTO> {
-        const payload = { userId: user.id, username: user.name, email: user.email };
+        const payload: UserDTO = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        };
         const [access_token, refresh_token] = await Promise.all([
             this.jwtService.signAsync(payload),
             this.jwtService.signAsync({ payload }, {

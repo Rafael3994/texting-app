@@ -7,14 +7,19 @@ import {
   Param,
   Post,
   Put,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
-import { UserEntity } from './entity/user.entity';
+import { UserEntity, UserRoles } from './entity/user.entity';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
 import { Public } from 'src/auth/public.decorator';
+import { Roles } from 'src/auth/roles.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
 
 @Controller('user')
 export class UserController {
@@ -24,6 +29,8 @@ export class UserController {
   ) { }
 
   @Get('')
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   async findAllUsers(@Res() response): Promise<any> {
     try {
       this.userService
@@ -46,13 +53,17 @@ export class UserController {
   }
 
   @Get(':id')
-  async findUserById(@Res() response, @Param('id') id: string): Promise<any> {
+  async findUserById(
+    @Res() response,
+    @Req() request,
+    @Param('id') id: string
+  ): Promise<any> {
     try {
-
-      if (!id) return response.status(400).send('Incorrect data.');
+      const selectedId = selectIdToDoTheSearch(request.user, id);
+      if (!selectedId) return response.status(400).send('Incorrect data.');
 
       this.userService
-        .findUserById(id)
+        .findUserById(selectedId)
         .then((res: UserEntity) => {
           if (!isNotFound(res)) return response.status(404).send('Not found.');
           return response
@@ -98,13 +109,17 @@ export class UserController {
   @Put(':id')
   async updateUser(
     @Res() response,
+    @Req() request,
     @Param('id') id: string,
     @Body() user: UserUpdatedDTO,
   ): Promise<any> {
     try {
-      if (!user || !id || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
+      const selectedId = selectIdToDoTheSearch(request.user, id);
+      if (!selectedId) return response.status(400).send('Incorrect data.');
 
-      const foundUser = await this.userService.findUserById(id)
+      if (!user || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
+
+      const foundUser = await this.userService.findUserById(selectedId)
       if (!foundUser)
         return response.status(404).send('Not found.');
 
@@ -127,6 +142,8 @@ export class UserController {
     }
   }
 
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Delete(':id')
   async deleteUserById(@Res() response, @Param('id') id: string): Promise<any> {
     try {

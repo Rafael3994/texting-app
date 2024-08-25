@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './entity/user.entity';
+import { UserEntity, UserRoles } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { UserDTO } from './dto/user.dto';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
@@ -39,6 +39,7 @@ export class UserService {
     const newUser = new UserEntity();
     newUser.name = user.name;
     newUser.email = user.email;
+    newUser.role = UserRoles.USER;
     const encryptPass = await bcrypt.hash(user.password, SALTROUNDS);
     newUser.password = encryptPass;
     return this.usersRepository.save(newUser);
