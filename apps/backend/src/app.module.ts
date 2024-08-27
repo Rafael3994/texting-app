@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { BlacklistRefreshTokenModule } from './blacklist-refresh-token/blacklist-refresh-token.module';
 import { BlacklistRefreshTokenEntity } from './blacklist-refresh-token/entity/blacklist-refresh-token.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 require('dotenv').config();
 
@@ -28,6 +29,10 @@ const env = {
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 10,
+    }]),
     UserModule,
     ChatModule,
     TextModule,

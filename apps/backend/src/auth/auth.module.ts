@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { BlacklistRefreshTokenModule } from 'src/blacklist-refresh-token/blacklist-refresh-token.module';
+import { ThrottlerGuard } from '@nestjs/throttler';
 require('dotenv').config();
 
 @Module({
@@ -18,6 +19,11 @@ require('dotenv').config();
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    // Use ThrottlerGuard in all endpoints
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    }
   ],
   imports: [
     UserModule,
