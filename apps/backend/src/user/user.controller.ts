@@ -20,7 +20,9 @@ import { Public } from 'src/auth/public.decorator';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('USER')
 @Controller('user')
 export class UserController {
   constructor(
@@ -28,6 +30,7 @@ export class UserController {
     private logger: Logger,
   ) { }
 
+  @ApiBearerAuth()
   @Get('')
   @Roles('admin')
   @UseGuards(RolesGuard)
@@ -52,6 +55,7 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth()
   @Get(':id')
   async findUserById(
     @Res() response,
@@ -106,6 +110,7 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth()
   @Put(':id')
   async updateUser(
     @Res() response,
@@ -142,6 +147,7 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth()
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Delete(':id')

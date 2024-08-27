@@ -11,7 +11,11 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
 import { TextService } from 'src/text/text.service';
 import { TextDTO } from 'src/text/dto/text.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ChatCreateDTO } from './dto/chatCreate.dto';
 
+@ApiBearerAuth()
+@ApiTags('CHAT')
 @Controller('chat')
 export class ChatController {
     constructor(
@@ -58,7 +62,7 @@ export class ChatController {
     @Post()
     async createChat(
         @Res() response,
-        @Body('') chat: ChatDTO
+        @Body('') chat: ChatCreateDTO
     ): Promise<any> {
         try {
             if (!chat)

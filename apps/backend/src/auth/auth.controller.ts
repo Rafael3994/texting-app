@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request, Req, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { authDTO } from './dto/auth.dto';
 import { AuthGuard } from './auth.guard';
 import { Public } from './public.decorator';
 import { BlacklistRefreshTokenService } from 'src/blacklist-refresh-token/blacklist-refresh-token.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -29,6 +31,7 @@ export class AuthController {
         }
     }
 
+    @ApiBearerAuth()
     @Public()
     @Post('refresh')
     async refreshToken(
@@ -56,6 +59,7 @@ export class AuthController {
         }
     }
 
+    @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('profile')
     getProfile(@Request() req) {

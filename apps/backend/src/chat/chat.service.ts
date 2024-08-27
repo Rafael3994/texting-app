@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity';
 import { Repository } from 'typeorm';
 import { TextService } from 'src/text/text.service';
+import { ChatCreateDTO } from './dto/chatCreate.dto';
 
 @Injectable()
 export class ChatService {
@@ -24,7 +25,7 @@ export class ChatService {
         return this.chatRepository.find();
     }
 
-    createChat(chat: ChatDTO): Promise<ChatEntity> {
+    createChat(chat: ChatCreateDTO): Promise<ChatEntity> {
         const newChat = new ChatEntity();
         newChat.userId1 = chat.userId1;
         newChat.userId2 = chat.userId2;

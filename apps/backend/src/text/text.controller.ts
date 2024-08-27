@@ -11,7 +11,10 @@ import { Roles } from 'src/auth/roles.decorator';
 import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
 import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
 import { isOwn } from 'src/utils/isOwn';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('TEXT')
 @Controller('text')
 export class TextController {
     constructor(
