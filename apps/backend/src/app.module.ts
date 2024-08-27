@@ -8,7 +8,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ChatModule } from './chat/chat.module';
 import { TextModule } from './text/text.module';
-import { ChatEntity } from './chat/entity/chat.entity.dto';
+import { ChatEntity } from './chat/entity/chat.entity';
 import { TextEntity } from './text/entity/text.entity';
 import { AuthModule } from './auth/auth.module';
 import { BlacklistRefreshTokenModule } from './blacklist-refresh-token/blacklist-refresh-token.module';

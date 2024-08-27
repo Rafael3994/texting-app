@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { ChatEntity } from 'src/chat/entity/chat.entity.dto';
 import { TextDTO } from '../dto/text.dto';
 import { TextPublicDTO } from '../dto/text.public.dto';
+import { ChatEntity } from 'src/chat/entity/chat.entity';
 
 @Entity({ name: 'text' })
 export class TextEntity {
@@ -21,7 +21,7 @@ export class TextEntity {
     @CreateDateColumn({ type: 'timestamp', name: 'created_time', default: () => 'CURRENT_TIMESTAMP' })
     createdTime: Date;
 
-    @ManyToOne(() => ChatEntity, chat => chat.texts)
+    @ManyToOne(() => ChatEntity, (chat: ChatEntity) => chat.texts, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'chat_id' })
     chat: ChatEntity;
 

@@ -2,19 +2,22 @@ import { Body, Controller, Delete, ForbiddenException, Get, Logger, Param, Post,
 import { ChatDTO } from './dto/chat.dto';
 import { response } from 'express';
 import { ChatService } from './chat.service';
-import { ChatEntity } from './entity/chat.entity.dto';
+import { ChatEntity } from './entity/chat.entity';
 import { UserService } from 'src/user/user.service';
 import { isNotFound } from 'src/utils/classificatedHttpCode';
 import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
+import { TextService } from 'src/text/text.service';
+import { TextDTO } from 'src/text/dto/text.dto';
 
 @Controller('chat')
 export class ChatController {
     constructor(
         private chatService: ChatService,
         private userService: UserService,
+        private textService: TextService,
         private logger: Logger,
     ) { }
 
@@ -128,7 +131,7 @@ export class ChatController {
         @Param('id') id: string
     ): Promise<any> {
         try {
-            const foundChat = await this.chatService.findChatById(id)
+            const foundChat = await this.chatService.findChatById(id, ['texts'])
             if (!foundChat) return response.status(404).send('Not found.');
 
             if (
@@ -138,6 +141,12 @@ export class ChatController {
             ) {
                 throw new ForbiddenException('You do not have permission to access this resource');
             }
+
+            await Promise.all([
+                foundChat.texts.map((text: TextDTO) => {
+                    this.textService.deleteText(text.id);
+                })
+            ]);
 
             this.chatService
                 .deleteChat(id)

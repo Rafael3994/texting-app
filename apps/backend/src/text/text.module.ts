@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { forwardRef, Logger, Module } from '@nestjs/common';
 import { TextController } from './text.controller';
 import { TextService } from './text.service';
 import { Repository } from 'typeorm';
@@ -11,7 +11,7 @@ import { ChatModule } from 'src/chat/chat.module';
   imports: [
     TypeOrmModule.forFeature([TextEntity]),
     UserModule,
-    ChatModule,
+    forwardRef(() => ChatModule),
   ],
   controllers: [TextController],
   providers: [TextService, Logger],

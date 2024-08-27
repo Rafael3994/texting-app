@@ -26,6 +26,4 @@ export class TextService {
     async deleteText(id: string): Promise<number> {
         return (await this.textRepository.delete(id)).affected;
     }
-
-
 }

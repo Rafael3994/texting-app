@@ -25,7 +25,7 @@ export class ChatEntity {
     @JoinColumn({ name: 'user_id_2' })
     user2: UserEntity;
 
-    @OneToMany(() => TextEntity, text => text.chat)
+    @OneToMany(() => TextEntity, text => text.chat, { cascade: true, onDelete: 'CASCADE' })
     texts: TextEntity[];
 
 

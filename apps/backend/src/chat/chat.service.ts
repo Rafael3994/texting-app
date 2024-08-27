@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ChatDTO } from './dto/chat.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatEntity } from './entity/chat.entity.dto';
+import { ChatEntity } from './entity/chat.entity';
 import { Repository } from 'typeorm';
+import { TextService } from 'src/text/text.service';
 
 @Injectable()
 export class ChatService {
     constructor(
         @InjectRepository(ChatEntity)
-        private chatRepository: Repository<ChatEntity>
+        private chatRepository: Repository<ChatEntity>,
+        private textService: TextService,
     ) { }
 
     findChatById(chatId: string, relations: string[] = []) {
