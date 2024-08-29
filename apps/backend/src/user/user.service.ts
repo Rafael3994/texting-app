@@ -4,6 +4,7 @@ import { UserEntity, UserRoles } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { UserDTO } from './dto/user.dto';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
+import { UserCreatedDTO } from './dto/user.created.dto';
 const bcrypt = require('bcrypt');
 
 export const SALTROUNDS = 8;
@@ -35,7 +36,7 @@ export class UserService {
     return this.usersRepository.findOne({ where: { email: emial }, select })
   }
 
-  async createUser(user: UserDTO): Promise<UserEntity> {
+  async createUser(user: UserCreatedDTO): Promise<UserEntity> {
     const newUser = new UserEntity();
     newUser.name = user.name;
     newUser.email = user.email;

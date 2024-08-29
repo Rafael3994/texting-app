@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity';
 import { Repository } from 'typeorm';
 import { TextService } from 'src/text/text.service';
-import { ChatCreateDTO } from './dto/chatCreate.dto';
+import { ChatCreateDTO } from './dto/chat.create.dto';
 
 @Injectable()
 export class ChatService {

@@ -36,9 +36,9 @@ export class ChatEntity {
             userId1: chatEntity.userId1,
             userId2: chatEntity.userId2,
             createdTime: chatEntity.createdTime,
-            user1: chatEntity.user1 && UserEntity.parserUserEntityToDTO(chatEntity.user1),
-            user2: chatEntity.user1 && UserEntity.parserUserEntityToDTO(chatEntity.user2),
-            texts: chatEntity.texts && chatEntity.texts.map((text: TextEntity) => TextEntity.parserTextPucblicEntityToDTO(text))
+            user1: chatEntity.user1 && UserEntity.parserUserPucblicEntityToDTO(chatEntity.user1),
+            user2: chatEntity.user1 && UserEntity.parserUserPucblicEntityToDTO(chatEntity.user2),
+            texts: chatEntity.texts && chatEntity.texts.map((text: TextEntity) => TextEntity.parserTextPublicEntityToDTO(text))
         };
         return userDTO;
     };

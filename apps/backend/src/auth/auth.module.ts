@@ -19,11 +19,6 @@ require('dotenv').config();
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    // Use ThrottlerGuard in all endpoints
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    }
   ],
   imports: [
     UserModule,
@@ -31,8 +26,7 @@ require('dotenv').config();
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_KEY_JWT,
-      signOptions: { expiresIn: '1000s' },
-      // signOptions: { expiresIn: '20s' },
+      signOptions: { expiresIn: '20s' },
     }),
   ]
 })

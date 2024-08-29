@@ -35,13 +35,13 @@ export class TextEntity {
             userId: textEntity.userId,
             chatId: textEntity.chatId,
             text: textEntity.text,
-            user: textEntity.user && UserEntity.parserUserEntityToDTO(textEntity.user),
+            user: textEntity.user && UserEntity.parserUserPucblicEntityToDTO(textEntity.user),
             chat: textEntity.chat && ChatEntity.parserChatEntityToDTO(textEntity.chat),
         };
         return textDTO;
     };
 
-    static parserTextPucblicEntityToDTO = (textEntity: TextEntity): TextPublicDTO => {
+    static parserTextPublicEntityToDTO = (textEntity: TextEntity): TextPublicDTO => {
         const textDTO: TextPublicDTO = {
             id: textEntity.id,
             userId: textEntity.userId,

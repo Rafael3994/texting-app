@@ -11,8 +11,8 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
 import { TextService } from 'src/text/text.service';
 import { TextDTO } from 'src/text/dto/text.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ChatCreateDTO } from './dto/chatCreate.dto';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
+import { ChatCreateDTO } from './dto/chat.create.dto';
 
 @ApiBearerAuth()
 @ApiTags('CHAT')
@@ -25,6 +25,15 @@ export class ChatController {
         private logger: Logger,
     ) { }
 
+    @ApiOperation({
+        summary: 'Get a chat.',
+        description: 'This endpoint is enabled for the users participants of the chat and users with role admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the chat found.',
+        type: PickType(ChatDTO, ['user1', 'user2', 'texts'] as const),
+    })
     @Get(':id')
     async findChatById(
         @Res() response,
@@ -59,6 +68,15 @@ export class ChatController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Create a chat.',
+        description: 'Create a chat.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the created chat.',
+        type: PickType(ChatDTO, ['user1', 'user2'] as const),
+    })
     @Post()
     async createChat(
         @Res() response,
@@ -86,6 +104,15 @@ export class ChatController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Update chat.',
+        description: 'Only for the admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the updated chat.',
+        type: PickType(ChatDTO, ['user1', 'user2', 'texts'] as const),
+    })
     @Put(':id')
     @Roles('admin')
     @UseGuards(RolesGuard)
@@ -128,6 +155,15 @@ export class ChatController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Delete a chat.',
+        description: 'This endpoint is enabled for the users participants of the chat and users with role admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the deleted chat.',
+        type: PickType(ChatDTO, ['user1', 'user2', 'texts'] as const),
+    })
     @Delete(':id')
     async deleteById(
         @Res() response,

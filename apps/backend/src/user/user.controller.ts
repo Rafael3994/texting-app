@@ -20,7 +20,9 @@ import { Public } from 'src/auth/public.decorator';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
+import { UserPublicDTO } from './dto/user.public.dto';
+import { UserCreatedDTO } from './dto/user.created.dto';
 
 @ApiTags('USER')
 @Controller('user')
@@ -31,6 +33,16 @@ export class UserController {
   ) { }
 
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get all users.',
+    description: 'This endpoint is only for role admins'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The list of items has been successfully retrieved.',
+    type: UserDTO,
+    isArray: true,
+  })
   @Get('')
   @Roles('admin')
   @UseGuards(RolesGuard)
@@ -56,6 +68,15 @@ export class UserController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get a user by id.',
+    description: 'If you use a admin user you can search all users, but if you use a user standard only search yourself'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The list of items has been successfully retrieved.',
+    type: [PickType(UserDTO, ['id', 'name', 'email'] as const)],
+  })
   @Get(':id')
   async findUserById(
     @Res() response,
@@ -84,9 +105,18 @@ export class UserController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Create user',
+    description: 'The endpoint is public.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the new user.',
+    type: UserPublicDTO,
+  })
   @Public()
   @Post('')
-  async createUser(@Res() response, @Body() user: UserDTO): Promise<any> {
+  async createUser(@Res() response, @Body() user: UserCreatedDTO): Promise<any> {
     try {
 
       if (!user || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
@@ -111,6 +141,15 @@ export class UserController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update user.',
+    description: 'If you use a admin user you can update the user pass, but if you use a user standard only updated yourself'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the updated user.',
+    type: UserPublicDTO,
+  })
   @Put(':id')
   async updateUser(
     @Res() response,
@@ -136,7 +175,7 @@ export class UserController {
           }
         )
         .then((res: UserEntity) => {
-          return response.status(201).send(UserEntity.parserUserEntityToDTO(res));
+          return response.status(201).send(UserEntity.parserUserPucblicEntityToDTO(res));
         })
         .catch((err) => {
           throw new Error(err);
@@ -148,6 +187,15 @@ export class UserController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Delete user.',
+    description: 'This endpoint is only used for the role admin.'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the deleted user.',
+    type: UserDTO,
+  })
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Delete(':id')

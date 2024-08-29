@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TextEntity } from './entity/text.entity';
 import { Repository } from 'typeorm';
 import { TextDTO } from './dto/text.dto';
+import { TextCreateDTO } from './dto/text.create.dto';
 
 @Injectable()
 export class TextService {
@@ -15,7 +16,7 @@ export class TextService {
         return await this.textRepository.findOne({ where: { id } })
     }
 
-    async createText(text: TextDTO): Promise<TextEntity> {
+    async createText(text: TextCreateDTO): Promise<TextEntity> {
         return await this.textRepository.save(text);
     }
 

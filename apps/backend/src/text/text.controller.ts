@@ -11,7 +11,9 @@ import { Roles } from 'src/auth/roles.decorator';
 import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
 import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
 import { isOwn } from 'src/utils/isOwn';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
+import { TextPublicDTO } from './dto/text.public.dto';
+import { TextCreateDTO } from './dto/text.create.dto';
 
 @ApiBearerAuth()
 @ApiTags('TEXT')
@@ -24,6 +26,15 @@ export class TextController {
         private logger: Logger
     ) { }
 
+    @ApiOperation({
+        summary: 'Get a text.',
+        description: 'This endpoint is enabled for the user owner of the text and users with role admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the text.',
+        type: TextDTO,
+    })
     @Get(':id')
     async findTextById(
         @Res() response,
@@ -53,11 +64,20 @@ export class TextController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Create a text.',
+        description: 'This endpoint is enabled for the users participants of the chat.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the created text.',
+        type: TextPublicDTO,
+    })
     @Post('')
     async createText(
         @Res() response,
         @Req() request,
-        @Body() text: TextDTO
+        @Body() text: TextCreateDTO
     ): Promise<any> {
         try {
 
@@ -79,7 +99,7 @@ export class TextController {
                 .createText(text)
                 .then((res: TextEntity) => {
                     return response.status(201).send(
-                        TextEntity.parserTextPucblicEntityToDTO(res)
+                        TextEntity.parserTextPublicEntityToDTO(res)
                     );
                 })
                 .catch((err) => {
@@ -92,6 +112,15 @@ export class TextController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Update a text.',
+        description: 'This endpoint is enabled for the user owner of the text.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the updated text.',
+        type: TextCreateDTO,
+    })
     @Roles('user')
     @UseGuards(RolesGuard)
     @Put(':id')
@@ -118,10 +147,10 @@ export class TextController {
 
             this.textService
                 .updateText(
-                    { ...TextEntity.parserTextEntityToDTO(foundText), text: text }
+                    { ...TextEntity.parserTextPublicEntityToDTO(foundText), text: text }
                 )
                 .then((res: TextEntity) => {
-                    return response.status(201).send(TextEntity.parserTextEntityToDTO(res));
+                    return response.status(201).send(TextEntity.parserTextPublicEntityToDTO(res));
                 })
                 .catch((err) => {
                     throw new Error(err);
@@ -133,6 +162,15 @@ export class TextController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Delete a text.',
+        description: 'This endpoint is enabled for the user owner of the text and the user with role admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the delete text.',
+        type: TextPublicDTO,
+    })
     @Delete(':id')
     async deleteText(
         @Res() response,
@@ -157,7 +195,7 @@ export class TextController {
 
             this.textService.deleteText(id)
                 .then(res => {
-                    if (res > 0) return response.status(200).send(TextEntity.parserTextEntityToDTO(foundText));
+                    if (res > 0) return response.status(200).send(TextEntity.parserTextPublicEntityToDTO(foundText));
                     return response.status(404).send('Not Delete.');
                 })
                 .catch((error) => {
@@ -177,7 +215,7 @@ export class TextController {
         return true;
     }
 
-    isSanitedText(newText: TextDTO): boolean {
+    isSanitedText(newText: TextCreateDTO): boolean {
         if (!newText || !newText.text || !newText.userId || !newText.chatId) return false;
         return true;
     }
