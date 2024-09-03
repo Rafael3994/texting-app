@@ -30,13 +30,15 @@ export class UserService {
   }
 
   async findUserByEmail(
-    emial: string,
+    email: string,
     select: (keyof UserEntity)[] = ["id", "name", "email"]
   ): Promise<UserEntity> {
-    return this.usersRepository.findOne({ where: { email: emial }, select })
+    if (!email) throw new BadRequestException();
+    return this.usersRepository.findOne({ where: { email: email }, select })
   }
 
   async createUser(user: UserCreatedDTO): Promise<UserEntity> {
+    if (!user) throw new BadRequestException();
     const newUser = new UserEntity();
     newUser.name = user.name;
     newUser.email = user.email;
@@ -47,10 +49,12 @@ export class UserService {
   }
 
   async updateUser(user: UserUpdatedDTO): Promise<UserEntity> {
+    if (!user) throw new BadRequestException();
     return this.usersRepository.save(user);
   }
 
   async deleteUser(id: string): Promise<number> {
+    if (!id) throw new BadRequestException();
     return (await this.usersRepository.delete(id)).affected;
   }
 

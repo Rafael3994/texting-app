@@ -7,33 +7,69 @@ import { UserDTO } from './dto/user.dto';
 import { UserEntity, UserRoles } from './entity/user.entity';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
 
+export const mockedUsersValue: UserDTO[] = [
+  {
+    id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
+    name: "userTest",
+    email: "userTest@gmail.com",
+    password: "$2b$08$YoRkNwbaVrenijIxuuxG/eTHJv.It3m4Hu2YYLbjFFWaBAozH9k4W",
+    role: UserRoles.ADMIN
+  },
+  {
+    id: "09398f56-93e4-4a2f-96e8-342683f7d35a",
+    name: "user1",
+    email: "user1@gmail.com",
+    password: "$2b$08$zYfB.m7VNCwFtqG4amUc0O9AiYfWD2ZutgBlLv7F5gmWI4BH.azJy",
+    role: UserRoles.USER
+  },
+  {
+    id: "0e2431eb-a822-4e34-aad1-490721012e87",
+    name: "user2",
+    email: "user2@gmail.com",
+    password: "$2b$08$y8lyR4IHnkmjyluG8NAsAe043THzSxZJI9KM/nW76ka7L.ruQEIH6",
+    role: UserRoles.USER
+  },
+];
+
+export const mockedUsersEntityValue: UserEntity[] = [
+  {
+    id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
+    name: "userTest",
+    email: "userTest@gmail.com",
+    password: "$2b$08$YoRkNwbaVrenijIxuuxG/eTHJv.It3m4Hu2YYLbjFFWaBAozH9k4W",
+    role: UserRoles.ADMIN,
+    createdTime: undefined,
+    chatsAsUser1: [],
+    chatsAsUser2: [],
+    texts: [],
+  },
+  {
+    id: "09398f56-93e4-4a2f-96e8-342683f7d35a",
+    name: "user1",
+    email: "user1@gmail.com",
+    password: "$2b$08$zYfB.m7VNCwFtqG4amUc0O9AiYfWD2ZutgBlLv7F5gmWI4BH.azJy",
+    role: UserRoles.USER,
+    createdTime: undefined,
+    chatsAsUser1: [],
+    chatsAsUser2: [],
+    texts: [],
+  },
+  {
+    id: "0e2431eb-a822-4e34-aad1-490721012e87",
+    name: "user2",
+    email: "user2@gmail.com",
+    password: "$2b$08$y8lyR4IHnkmjyluG8NAsAe043THzSxZJI9KM/nW76ka7L.ruQEIH6",
+    role: UserRoles.USER,
+    createdTime: undefined,
+    chatsAsUser1: [],
+    chatsAsUser2: [],
+    texts: [],
+  },
+];
+
 describe('UserController', () => {
   let controller: UserController;
   let service: UserService;
-
-  const mockedUsersValue: UserDTO[] = [
-    {
-      id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
-      name: "userTest",
-      email: "userTest@gmail.com",
-      password: "$2b$08$YoRkNwbaVrenijIxuuxG/eTHJv.It3m4Hu2YYLbjFFWaBAozH9k4W",
-      role: UserRoles.ADMIN
-    },
-    {
-      id: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-      name: "user1",
-      email: "user1@gmail.com",
-      password: "$2b$08$zYfB.m7VNCwFtqG4amUc0O9AiYfWD2ZutgBlLv7F5gmWI4BH.azJy",
-      role: UserRoles.USER
-    },
-    {
-      id: "0e2431eb-a822-4e34-aad1-490721012e87",
-      name: "user2",
-      email: "user2@gmail.com",
-      password: "$2b$08$y8lyR4IHnkmjyluG8NAsAe043THzSxZJI9KM/nW76ka7L.ruQEIH6",
-      role: UserRoles.USER
-    },
-  ];
 
   const mockUsersService = {
     findAllUsers: () => mockedUsersValue,
@@ -47,42 +83,6 @@ describe('UserController', () => {
   const mockRequest = {
     user: { id: '09398f56-93e4-4a2f-96e8-342683f7d35a', role: UserRoles.USER },
   };
-
-  const mockedUsersEntityValue: UserEntity[] = [
-    {
-      id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
-      name: "userTest",
-      email: "userTest@gmail.com",
-      password: "$2b$08$YoRkNwbaVrenijIxuuxG/eTHJv.It3m4Hu2YYLbjFFWaBAozH9k4W",
-      role: UserRoles.ADMIN,
-      createdTime: undefined,
-      chatsAsUser1: [],
-      chatsAsUser2: [],
-      texts: [],
-    },
-    {
-      id: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-      name: "user1",
-      email: "user1@gmail.com",
-      password: "$2b$08$zYfB.m7VNCwFtqG4amUc0O9AiYfWD2ZutgBlLv7F5gmWI4BH.azJy",
-      role: UserRoles.USER,
-      createdTime: undefined,
-      chatsAsUser1: [],
-      chatsAsUser2: [],
-      texts: [],
-    },
-    {
-      id: "0e2431eb-a822-4e34-aad1-490721012e87",
-      name: "user2",
-      email: "user2@gmail.com",
-      password: "$2b$08$y8lyR4IHnkmjyluG8NAsAe043THzSxZJI9KM/nW76ka7L.ruQEIH6",
-      role: UserRoles.USER,
-      createdTime: undefined,
-      chatsAsUser1: [],
-      chatsAsUser2: [],
-      texts: [],
-    },
-  ];
 
   const mockResponse = {
     status: jest.fn().mockReturnThis(),
