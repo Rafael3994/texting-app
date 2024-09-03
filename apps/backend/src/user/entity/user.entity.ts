@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserDTO } from '../dto/user.dto';
-import { TextEntity } from 'src/text/entity/text.entity';
 import { UserPublicDTO } from '../dto/user.public.dto';
-import { ChatEntity } from 'src/chat/entity/chat.entity';
+import { TextEntity } from '@src/text/entity/text.entity';
+import { ChatEntity } from '@src/chat/entity/chat.entity';
 
 export enum UserRoles {
   USER = 'user',

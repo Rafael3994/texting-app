@@ -1,6 +1,5 @@
-import { TextPublicDTO } from "src/text/dto/text.public.dto";
-import { UserDTO } from "src/user/dto/user.dto";
-import { UserPublicDTO } from "src/user/dto/user.public.dto";
+import { TextPublicDTO } from "@src/text/dto/text.public.dto";
+import { UserPublicDTO } from "@src/user/dto/user.public.dto";
 
 export class ChatDTO {
     id: string;

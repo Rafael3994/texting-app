@@ -13,13 +13,13 @@ import {
 } from '@nestjs/common';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
-import { UserEntity, UserRoles } from './entity/user.entity';
-import { isNotFound } from 'src/utils/classificatedHttpCode';
+import { UserEntity } from './entity/user.entity';
+import { isNotFound } from '@src/utils/classificatedHttpCode';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
-import { Public } from 'src/auth/public.decorator';
-import { Roles } from 'src/auth/roles.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
+import { Public } from '@src/auth/public.decorator';
+import { Roles } from '@src/auth/roles.decorator';
+import { RolesGuard } from '@src/auth/roles.guard';
+import { selectIdToDoTheSearch } from '@src/utils/selectIdToDoTheSearch';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 import { UserPublicDTO } from './dto/user.public.dto';
 import { UserCreatedDTO } from './dto/user.created.dto';
@@ -48,19 +48,14 @@ export class UserController {
   @UseGuards(RolesGuard)
   async findAllUsers(@Res() response): Promise<any> {
     try {
-      this.userService
-        .findAllUsers()
-        .then((res: UserEntity[]) => {
-          if (!isNotFound(res)) return response.status(204);
-          return response
-            .status(200)
-            .send(
-              res.map((user) => UserEntity.parserUserEntityToDTO(user))
-            );
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
+      const res: UserEntity[] = await this.userService.findAllUsers();
+      if (isNotFound(res)) {
+        return response.status(204).send([]);
+      }
+
+      return response.status(200).send(
+        res.map((user) => UserEntity.parserUserEntityToDTO(user))
+      );
     } catch (err) {
       this.logger.error('findAllUsers', err);
       return response.status(500).send('Something was bad.');
@@ -85,23 +80,17 @@ export class UserController {
   ): Promise<any> {
     try {
       const selectedId = selectIdToDoTheSearch(request.user, id);
-      if (!selectedId) return response.status(400).send('Incorrect data.');
-
-      this.userService
-        .findUserById(selectedId)
-        .then((res: UserEntity) => {
-          if (!isNotFound(res)) return response.status(404).send('Not found.');
-          return response
-            .status(200)
-            .send(UserEntity.parserUserEntityToDTO(res));
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
-
+      if (!selectedId) {
+        return response.status(400).send('Incorrect data.');
+      }
+      const user: UserEntity = await this.userService.findUserById(selectedId);
+      if (isNotFound(user)) {
+        return response.status(404).send('Not found.');
+      }
+      return response.status(200).send(UserEntity.parserUserEntityToDTO(user));
     } catch (err) {
       this.logger.error('findUserById', err);
-      return response.status(500).send('Something was bad.');
+      return response.status(500).send('Something went wrong.');
     }
   }
 
@@ -118,27 +107,26 @@ export class UserController {
   @Post('')
   async createUser(@Res() response, @Body() user: UserCreatedDTO): Promise<any> {
     try {
+      if (!user || !this.isSanitedUser(user)) {
+        return response.status(400).send('Incorrect data.');
+      }
 
-      if (!user || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
-
-      if (await this.userService.findUserByEmail(user.email))
+      const existingUser = await this.userService.findUserByEmail(user.email);
+      if (existingUser) {
         return response.status(404).send(`It's already exist`);
+      }
 
-      this.userService
-        .createUser(user)
-        .then((res: UserEntity) => {
-          let _res = UserEntity.parserUserPucblicEntityToDTO(res);
-          return response.status(201).send(_res);
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
+      const createdUser = await this.userService.createUser(user);
+      const publicUser = UserEntity.parserUserPucblicEntityToDTO(createdUser);
+
+      return response.status(201).send(publicUser);
 
     } catch (err) {
       this.logger.error('createUser', err);
       return response.status(500).send('Something was bad.');
     }
   }
+
 
   @ApiBearerAuth()
   @ApiOperation({
@@ -159,32 +147,33 @@ export class UserController {
   ): Promise<any> {
     try {
       const selectedId = selectIdToDoTheSearch(request.user, id);
-      if (!selectedId) return response.status(400).send('Incorrect data.');
+      if (!selectedId) {
+        return response.status(400).send('Incorrect data.');
+      }
 
-      if (!user || !this.isSanitedUser(user)) return response.status(400).send('Incorrect data.');
+      if (!user || !this.isSanitedUser(user)) {
+        return response.status(400).send('Incorrect data.');
+      }
 
-      const foundUser = await this.userService.findUserById(selectedId)
-      if (!foundUser)
+      const foundUser = await this.userService.findUserById(selectedId);
+      if (!foundUser) {
         return response.status(404).send('Not found.');
+      }
 
-      this.userService
-        .updateUser(
-          {
-            ...foundUser,
-            ...user,
-          }
-        )
-        .then((res: UserEntity) => {
-          return response.status(201).send(UserEntity.parserUserPucblicEntityToDTO(res));
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
+      const updatedUser = await this.userService.updateUser({
+        ...foundUser,
+        ...user,
+      });
+
+      return response.status(201).send(
+        UserEntity.parserUserPucblicEntityToDTO(updatedUser)
+      );
     } catch (err) {
       this.logger.error('updateUser', err);
       return response.status(500).send('Something was bad.');
     }
   }
+
 
   @ApiBearerAuth()
   @ApiOperation({
@@ -201,26 +190,28 @@ export class UserController {
   @Delete(':id')
   async deleteUserById(@Res() response, @Param('id') id: string): Promise<any> {
     try {
-      if (!id) return response.status(400).send('Incorrect data.');
+      if (!id) {
+        return response.status(400).send('Incorrect data.');
+      }
 
-      const foundUser = await this.userService.findUserById(id)
-      if (!foundUser)
+      const foundUser = await this.userService.findUserById(id);
+      if (!foundUser) {
         return response.status(404).send('Not found.');
+      }
 
-      this.userService
-        .deleteUser(id)
-        .then((res) => {
-          if (res > 0) return response.status(200).send(UserEntity.parserUserEntityToDTO(foundUser));
-          return response.status(404).send('Not Delete.');
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
+      const result = await this.userService.deleteUser(id);
+      if (result > 0) {
+        return response.status(200).send(UserEntity.parserUserEntityToDTO(foundUser));
+      } else {
+        return response.status(404).send('Not Delete.');
+      }
+
     } catch (err) {
       this.logger.error('deleteUserById', err);
       return response.status(500).send('Something was bad.');
     }
   }
+
 
   isSanitedUser = (user) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

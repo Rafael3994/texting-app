@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { UserEntity } from 'src/user/entity/user.entity';
 import { TextDTO } from '../dto/text.dto';
 import { TextPublicDTO } from '../dto/text.public.dto';
-import { ChatEntity } from 'src/chat/entity/chat.entity';
+import { UserEntity } from '@src/user/entity/user.entity';
+import { ChatEntity } from '@src/chat/entity/chat.entity';
 
 @Entity({ name: 'text' })
 export class TextEntity {

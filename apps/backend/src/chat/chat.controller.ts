@@ -1,16 +1,14 @@
 import { Body, Controller, Delete, ForbiddenException, Get, Logger, Param, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { ChatDTO } from './dto/chat.dto';
-import { response } from 'express';
 import { ChatService } from './chat.service';
 import { ChatEntity } from './entity/chat.entity';
-import { UserService } from 'src/user/user.service';
-import { isNotFound } from 'src/utils/classificatedHttpCode';
-import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
-import { Roles } from 'src/auth/roles.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
-import { TextService } from 'src/text/text.service';
-import { TextDTO } from 'src/text/dto/text.dto';
+import { UserService } from '@src/user/user.service';
+import { isNotFound } from '@src/utils/classificatedHttpCode';
+import { Roles } from '@src/auth/roles.decorator';
+import { RolesGuard } from '@src/auth/roles.guard';
+import { isOwnOrAdmin } from '@src/utils/isOwnOrAdmin';
+import { TextService } from '@src/text/text.service';
+import { TextDTO } from '@src/text/dto/text.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 import { ChatCreateDTO } from './dto/chat.create.dto';
 
@@ -45,7 +43,7 @@ export class ChatController {
 
             this.chatService.findChatById(chatId, ['user1', 'user2', 'texts'])
                 .then(res => {
-                    if (!isNotFound(res)) return response.status(404).send('Not found.');
+                    if (isNotFound(res)) return response.status(404).send('Not found.');
 
                     if (
                         !isOwnOrAdmin(request.user, res.userId1)

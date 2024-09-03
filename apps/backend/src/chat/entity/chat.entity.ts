@@ -1,7 +1,7 @@
-import { UserEntity } from 'src/user/entity/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { ChatDTO } from '../dto/chat.dto';
-import { TextEntity } from 'src/text/entity/text.entity';
+import { UserEntity } from '@src/user/entity/user.entity';
+import { TextEntity } from '@src/text/entity/text.entity';
 
 @Entity({ name: 'chat' })
 export class ChatEntity {

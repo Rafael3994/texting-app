@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity, UserRoles } from './entity/user.entity';
 import { Repository } from 'typeorm';
-import { UserDTO } from './dto/user.dto';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
 import { UserCreatedDTO } from './dto/user.created.dto';
 const bcrypt = require('bcrypt');
@@ -21,11 +20,12 @@ export class UserService {
   }
 
   async findUserByName(username: string): Promise<UserEntity> {
+    if (!username) throw new BadRequestException();
     return await this.usersRepository.findOne({ where: { name: username } });
-
   }
 
   async findUserById(id: string): Promise<UserEntity> {
+    if (!id) throw new BadRequestException();
     return this.usersRepository.findOne({ where: { id }, select: ["id", "name", "email"] })
   }
 

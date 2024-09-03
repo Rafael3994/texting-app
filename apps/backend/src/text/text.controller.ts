@@ -1,17 +1,15 @@
 import { Controller, Get, Param, Res, Logger, Post, Body, Put, Delete, UseGuards, Req } from '@nestjs/common';
 import { TextService } from './text.service';
-import { isNotFound } from 'src/utils/classificatedHttpCode';
+import { isNotFound } from '@src/utils/classificatedHttpCode';
 import { TextEntity } from './entity/text.entity';
 import { TextDTO } from './dto/text.dto';
-import { UserService } from 'src/user/user.service';
-import { ChatService } from 'src/chat/chat.service';
-import { response } from 'express';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
-import { selectIdToDoTheSearch } from 'src/utils/selectIdToDoTheSearch';
-import { isOwnOrAdmin } from 'src/utils/isOwnOrAdmin';
-import { isOwn } from 'src/utils/isOwn';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
+import { UserService } from '@src/user/user.service';
+import { ChatService } from '@src/chat/chat.service';
+import { RolesGuard } from '@src/auth/roles.guard';
+import { Roles } from '@src/auth/roles.decorator';
+import { isOwnOrAdmin } from '@src/utils/isOwnOrAdmin';
+import { isOwn } from '@src/utils/isOwn';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TextPublicDTO } from './dto/text.public.dto';
 import { TextCreateDTO } from './dto/text.create.dto';
 
@@ -45,7 +43,7 @@ export class TextController {
             if (!id) return response.status(400).send('Incorrect data.');
             this.textService.findTextById(id)
                 .then((res: TextEntity) => {
-                    if (!isNotFound(res)) return response.status(404).send('Not found.');
+                    if (isNotFound(res)) return response.status(404).send('Not found.');
                     if (
                         !isOwnOrAdmin(request.user, res.userId)
                     ) {

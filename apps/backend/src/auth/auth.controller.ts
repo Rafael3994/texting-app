@@ -3,10 +3,10 @@ import { AuthService } from './auth.service';
 import { AuthDTO } from './dto/auth.dto';
 import { AuthGuard } from './auth.guard';
 import { Public } from './public.decorator';
-import { BlacklistRefreshTokenService } from 'src/blacklist-refresh-token/blacklist-refresh-token.service';
+import { BlacklistRefreshTokenService } from '@src/blacklist-refresh-token/blacklist-refresh-token.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TokensDTO } from './dto/tokens.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserDTO } from '@src/user/dto/user.dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
