@@ -304,8 +304,6 @@ describe('UserController', () => {
     });
 
     it('should return "Incorrect data." when id is missing', async () => {
-      const userId = '';
-
       await controller.deleteUserById(mockResponse, '');
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);

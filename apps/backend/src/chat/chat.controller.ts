@@ -140,9 +140,9 @@ export class ChatController {
             const newChat = { ...ChatEntity.parserChatEntityToDTO(foundChat), ...chat }
 
             this.chatService
-                .updateChat(id, newChat)
+                .updateChat(newChat)
                 .then((res: ChatEntity) => {
-                    return response.status(201).send(ChatEntity.parserChatEntityToDTO(res));
+                    return response.status(201).send(ChatEntity.parserChatPublicEntityToDTO(res));
                 })
                 .catch((err) => {
                     throw new Error(err);
