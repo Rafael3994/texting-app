@@ -117,7 +117,7 @@ export class UserController {
       }
 
       const createdUser = await this.userService.createUser(user);
-      const publicUser = UserEntity.parserUserPucblicEntityToDTO(createdUser);
+      const publicUser = UserEntity.parserUserPublicEntityToDTO(createdUser);
 
       return response.status(201).send(publicUser);
 
@@ -166,7 +166,7 @@ export class UserController {
       });
 
       return response.status(201).send(
-        UserEntity.parserUserPucblicEntityToDTO(updatedUser)
+        UserEntity.parserUserPublicEntityToDTO(updatedUser)
       );
     } catch (err) {
       this.logger.error('updateUser', err);

@@ -5,7 +5,7 @@ import { UserEntity, UserRoles } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { BadRequestException } from '@nestjs/common';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
-import { mockedUsersEntityValue } from './user.controller.spec';
+import { mockedUsersEntity } from './user.controller.spec';
 const bcrypt = require('bcrypt');
 
 type TypeMockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
@@ -78,7 +78,7 @@ describe('UserService', () => {
 
   describe('findUserById', () => {
     it('should return the user', async () => {
-      const expectedUser = mockedUsersEntityValue[0];
+      const expectedUser = mockedUsersEntity[0];
 
       userRepository.findOne.mockReturnValue(expectedUser);
       const user = await service.findUserByName(userId);
@@ -199,8 +199,8 @@ describe('UserService', () => {
 
       jest.spyOn(service, 'findUserById')
         .mockImplementation(async (id: string) => {
-          if (id === userId1) return mockedUsersEntityValue[0];
-          if (id === userId2) return mockedUsersEntityValue[1];
+          if (id === userId1) return mockedUsersEntity[0];
+          if (id === userId2) return mockedUsersEntity[1];
           return null;
         });
 
@@ -214,7 +214,7 @@ describe('UserService', () => {
 
       jest.spyOn(service, 'findUserById')
         .mockImplementation(async (id: string) => {
-          if (id === userId1) return mockedUsersEntityValue[0];
+          if (id === userId1) return mockedUsersEntity[0];
           return null;
         });
 

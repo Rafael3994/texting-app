@@ -35,7 +35,7 @@ export class TextEntity {
             userId: textEntity.userId,
             chatId: textEntity.chatId,
             text: textEntity.text,
-            user: textEntity.user && UserEntity.parserUserPucblicEntityToDTO(textEntity.user),
+            user: textEntity.user && UserEntity.parserUserPublicEntityToDTO(textEntity.user),
             chat: textEntity.chat && ChatEntity.parserChatEntityToDTO(textEntity.chat),
         };
         return textDTO;

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChatController } from './chat.controller';
 import { ChatEntity } from './entity/chat.entity';
-import { mockedUsersEntityValue, mockRequest, mockResponse, mockUsersService } from '@src/user/user.controller.spec';
+import { mockedUsersEntity, mockRequest, mockResponse, mockUsersService } from '@src/user/user.controller.spec';
 import { ChatDTO } from './dto/chat.dto';
 import { ChatService } from './chat.service';
 import { UserRoles } from '@src/user/entity/user.entity';
@@ -13,46 +13,46 @@ import { mockTextService } from '@src/text/text.controller.spec';
 export const mockChatDTO: ChatDTO[] = [
   {
     id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
+    userId1: mockedUsersEntity[0].id,
+    userId2: mockedUsersEntity[1].id,
+    createdTime: undefined,
   },
   {
     id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
+    userId1: mockedUsersEntity[0].id,
+    userId2: mockedUsersEntity[1].id,
+    createdTime: undefined,
   },
 ]
 
 export const mockChatEntity: ChatEntity[] = [
   {
     id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
-    user1: mockedUsersEntityValue[0],
-    user2: mockedUsersEntityValue[1],
+    userId1: mockedUsersEntity[0].id,
+    userId2: mockedUsersEntity[1].id,
+    createdTime: undefined,
+    user1: mockedUsersEntity[0],
+    user2: mockedUsersEntity[1],
     texts: []
   },
   {
 
     id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
-    user1: mockedUsersEntityValue[0],
-    user2: mockedUsersEntityValue[1],
+    userId1: mockedUsersEntity[0].id,
+    userId2: mockedUsersEntity[1].id,
+    createdTime: undefined,
+    user1: mockedUsersEntity[0],
+    user2: mockedUsersEntity[1],
     texts: []
   },
 ];
 
 export const mockChatService = {
-  findChatById: () => mockChatEntity[0],
-  createChat: () => mockChatEntity,
-  updateChat: () => mockChatEntity,
-  deleteChat: () => mockChatEntity,
-  isOwnOrAdmin: () => true || false,
+  findChatById: jest.fn().mockResolvedValue(mockChatEntity[0]),
+  createChat: jest.fn().mockResolvedValue(mockChatEntity),
+  updateChat: jest.fn().mockResolvedValue(mockChatEntity),
+  deleteChat: jest.fn().mockResolvedValue(mockChatEntity),
+  isOwnOrAdmin: jest.fn().mockReturnValue(true || false),
 };
 
 describe('ChatController', () => {
@@ -63,6 +63,7 @@ describe('ChatController', () => {
   const mockChatId: string = '123456789';
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ChatController],
       providers: [

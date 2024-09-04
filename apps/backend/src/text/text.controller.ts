@@ -40,27 +40,27 @@ export class TextController {
         @Param('id') id: string
     ): Promise<any> {
         try {
-            if (!id) return response.status(400).send('Incorrect data.');
-            this.textService.findTextById(id)
-                .then((res: TextEntity) => {
-                    if (isNotFound(res)) return response.status(404).send('Not found.');
-                    if (
-                        !isOwnOrAdmin(request.user, res.userId)
-                    ) {
-                        response.status(401).send(`You don't have permission.`);
-                    }
-                    return response
-                        .status(200)
-                        .send(TextEntity.parserTextEntityToDTO(res));
-                })
-                .catch((error) => {
-                    throw new Error(error);
-                });
+            if (!id) {
+                return response.status(400).send('Incorrect data.');
+            }
+
+            const textEntity = await this.textService.findTextById(id);
+
+            if (isNotFound(textEntity)) {
+                return response.status(404).send('Not found.');
+            }
+
+            if (!isOwnOrAdmin(request.user, textEntity.userId)) {
+                return response.status(401).send(`You don't have permission.`);
+            }
+
+            return response.status(200).send(TextEntity.parserTextEntityToDTO(textEntity));
         } catch (error) {
             this.logger.error('findTextById', error);
-            return response.status(500).send('Something was bad.');
+            return response.status(500).send('Something went wrong.');
         }
     }
+
 
     @ApiOperation({
         summary: 'Create a text.',
@@ -78,37 +78,31 @@ export class TextController {
         @Body() text: TextCreateDTO
     ): Promise<any> {
         try {
-
-            if (!this.isSanitedText(text)) return response.status(400).send('Incorrect data.');
-
-            if (!(await this.areIdsExists(text.userId, text.chatId)))
-                return response.status(404).send('Data ids Not found.');
-
-            const foundChat = await this.chatService.findChatById(text.chatId)
-            if (
-                !isOwn(request.user, foundChat.userId1)
-                &&
-                !isOwn(request.user, foundChat.userId2)
-            ) {
-                response.status(401).send(`You don't have permission.`);
+            if (!this.isSanitedText(text)) {
+                return response.status(400).send('Incorrect data.');
             }
 
-            this.textService
-                .createText(text)
-                .then((res: TextEntity) => {
-                    return response.status(201).send(
-                        TextEntity.parserTextPublicEntityToDTO(res)
-                    );
-                })
-                .catch((err) => {
-                    throw new Error(err);
-                });
+            const idsExist = await this.areIdsExists(text.userId, text.chatId);
+            if (!idsExist) {
+                return response.status(404).send('Data ids Not found.');
+            }
+
+            const foundChat = await this.chatService.findChatById(text.chatId);
+            const hasPermission = isOwn(request.user, foundChat.userId1) || isOwn(request.user, foundChat.userId2);
+
+            if (!hasPermission) {
+                return response.status(401).send(`You don't have permission.`);
+            }
+
+            const createdText = await this.textService.createText(text);
+            return response.status(201).send(TextEntity.parserTextPublicEntityToDTO(createdText));
 
         } catch (err) {
             this.logger.error('createText', err);
-            return response.status(500).send('Something was bad.');
+            return response.status(500).send('Something went wrong.');
         }
     }
+
 
     @ApiOperation({
         summary: 'Update a text.',
@@ -128,37 +122,33 @@ export class TextController {
         @Param('id') id: string,
         @Body('text') text: string,
     ): Promise<any> {
+        if (!text) {
+            return response.status(400).send('Incorrect data.');
+        }
+
         try {
-            if (!text) return response.status(400).send('Incorrect data.');
-
             const foundText = await this.textService.findTextById(id);
-            if (!foundText) return response.status(404).send('Not found.');
-
-            const foundChat = await this.chatService.findChatById(foundText.chatId)
-            if (
-                !isOwn(request.user, foundChat.userId1)
-                &&
-                !isOwn(request.user, foundChat.userId2)
-            ) {
-                response.status(401).send(`You don't have permission.`);
+            if (!foundText) {
+                return response.status(404).send('Not found.');
             }
 
-            this.textService
-                .updateText(
-                    { ...TextEntity.parserTextPublicEntityToDTO(foundText), text: text }
-                )
-                .then((res: TextEntity) => {
-                    return response.status(201).send(TextEntity.parserTextPublicEntityToDTO(res));
-                })
-                .catch((err) => {
-                    throw new Error(err);
-                });
+            const foundChat = await this.chatService.findChatById(foundText.chatId);
+            if (!isOwn(request.user, foundChat.userId1) && !isOwn(request.user, foundChat.userId2)) {
+                return response.status(401).send(`You don't have permission.`);
+            }
 
+            const updatedText = await this.textService.updateText({
+                ...TextEntity.parserTextPublicEntityToDTO(foundText),
+                text: text,
+            });
+
+            return response.status(200).send(TextEntity.parserTextPublicEntityToDTO(updatedText));
         } catch (err) {
             this.logger.error('updateText', err);
-            return response.status(500).send('err: ' + err);
+            return response.status(500).send('Error: ' + err.message);
         }
     }
+
 
     @ApiOperation({
         summary: 'Delete a text.',
@@ -174,35 +164,31 @@ export class TextController {
         @Res() response,
         @Req() request,
         @Param('id') id: string
-    ) {
+    ): Promise<any> {
+        if (!id) {
+            return response.status(400).send('Incorrect data.');
+        }
+
         try {
-            if (!id) return response.status(400).send('Incorrect data.');
-
             const foundText = await this.textService.findTextById(id);
-            if (!foundText)
+            if (!foundText) {
                 return response.status(404).send('Not found.');
-
-            const foundChat = await this.chatService.findChatById(foundText.chatId)
-            if (
-                !isOwnOrAdmin(request.user, foundChat.userId1)
-                &&
-                !isOwnOrAdmin(request.user, foundChat.userId2)
-            ) {
-                response.status(401).send(`You don't have permission.`);
             }
 
-            this.textService.deleteText(id)
-                .then(res => {
-                    if (res > 0) return response.status(200).send(TextEntity.parserTextPublicEntityToDTO(foundText));
-                    return response.status(404).send('Not Delete.');
-                })
-                .catch((error) => {
-                    throw new Error(error);
-                });
+            const foundChat = await this.chatService.findChatById(foundText.chatId);
+            if (!isOwnOrAdmin(request.user, foundChat.userId1) && !isOwnOrAdmin(request.user, foundChat.userId2)) {
+                return response.status(401).send(`You don't have permission.`);
+            }
 
+            const deleteResult = await this.textService.deleteText(id);
+            if (deleteResult > 0) {
+                return response.status(200).send(TextEntity.parserTextPublicEntityToDTO(foundText));
+            } else {
+                return response.status(404).send('Not Deleted.');
+            }
         } catch (err) {
             this.logger.error('deleteText', err);
-            return response.status(500).send('err: ' + err);
+            return response.status(500).send('Error: ' + err.message);
         }
     }
 

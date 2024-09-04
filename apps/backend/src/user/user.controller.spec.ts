@@ -6,10 +6,7 @@ import { UserCreatedDTO } from './dto/user.created.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserEntity, UserRoles } from './entity/user.entity';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
-
-export const mockRequest = {
-  user: { id: '09398f56-93e4-4a2f-96e8-342683f7d35a', role: UserRoles.USER },
-};
+import { UserPublicDTO } from './dto/user.public.dto';
 
 export const mockResponse = {
   status: jest.fn().mockReturnThis(),
@@ -18,7 +15,7 @@ export const mockResponse = {
 };
 
 
-export const mockedUsersValue: UserDTO[] = [
+export const mockedUsersDTO: UserDTO[] = [
   {
     id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
     name: "userTest",
@@ -42,7 +39,22 @@ export const mockedUsersValue: UserDTO[] = [
   },
 ];
 
-export const mockedUsersEntityValue: UserEntity[] = [
+export const mockedUsersPublicDTO: UserPublicDTO[] = [
+  {
+    name: "userTest",
+    email: "userTest@gmail.com",
+  },
+  {
+    name: "user1",
+    email: "user1@gmail.com",
+  },
+  {
+    name: "user2",
+    email: "user2@gmail.com",
+  },
+];
+
+export const mockedUsersEntity: UserEntity[] = [
   {
     id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
     name: "userTest",
@@ -78,13 +90,17 @@ export const mockedUsersEntityValue: UserEntity[] = [
   },
 ];
 
+export const mockRequest = {
+  user: { id: mockedUsersEntity[1].id, role: UserRoles.USER },
+};
+
 export const mockUsersService = {
-  findAllUsers: () => mockedUsersValue,
-  findUserById: () => mockedUsersValue[0],
-  createUser: () => mockedUsersValue,
-  updateUser: () => mockedUsersValue,
-  findUserByEmail: () => mockedUsersEntityValue[0],
-  deleteUser: () => mockedUsersValue,
+  findAllUsers: () => mockedUsersEntity,
+  findUserById: () => mockedUsersEntity[0],
+  createUser: () => mockedUsersEntity,
+  updateUser: () => mockedUsersEntity,
+  findUserByEmail: () => mockedUsersEntity[0],
+  deleteUser: () => 1 || 0,
   areUsersExists: () => true || false,
 };
 
@@ -93,6 +109,7 @@ describe('UserController', () => {
   let service: UserService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [UserService, Logger],
@@ -113,10 +130,10 @@ describe('UserController', () => {
     it('should be return all users',
       async () => {
         const findAllUsersSpy = jest.spyOn(service, 'findAllUsers');
-        findAllUsersSpy.mockResolvedValue(mockedUsersEntityValue);
+        findAllUsersSpy.mockResolvedValue(mockedUsersEntity);
         await controller.findAllUsers(mockResponse);
         expect(mockResponse.status).toHaveBeenCalledWith(200);
-        expect(mockResponse.send).toHaveBeenCalledWith(mockedUsersValue);
+        expect(mockResponse.send).toHaveBeenCalledWith(mockedUsersDTO);
       }
     );
     it('should be return all users but there are not', async () => {
@@ -141,7 +158,7 @@ describe('UserController', () => {
 
   describe('findUserById', () => {
     it('should return the user', async () => {
-      const mockUserEntity = mockedUsersEntityValue[0];
+      const mockUserEntity = mockedUsersEntity[0];
       jest.spyOn(service, 'findUserById').mockResolvedValue(mockUserEntity);
 
       await controller.findUserById(mockResponse, mockRequest, mockUserEntity.id);
@@ -179,7 +196,7 @@ describe('UserController', () => {
 
   describe('createUser', () => {
     it('should return the created user', async () => {
-      const userEntity = mockedUsersEntityValue[0];
+      const userEntity = mockedUsersEntity[0];
       const mockUser: UserCreatedDTO = {
         email: 'newUser@gmail.com',
         password: 'newUser',
@@ -192,7 +209,7 @@ describe('UserController', () => {
       await controller.createUser(mockResponse, mockUser);
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.send).toHaveBeenCalledWith(UserEntity.parserUserPucblicEntityToDTO(userEntity));
+      expect(mockResponse.send).toHaveBeenCalledWith(UserEntity.parserUserPublicEntityToDTO(userEntity));
     });
 
     it('should return Incorrect data when passing wrong params', async () => {
@@ -205,7 +222,7 @@ describe('UserController', () => {
     });
 
     it('should return It is already exist when finding the email', async () => {
-      const mockedUserValue = mockedUsersEntityValue[0];
+      const mockedUserValue = mockedUsersEntity[0];
       const existingUser = {
         email: mockedUserValue.email,
         password: mockedUserValue.password,
@@ -233,7 +250,7 @@ describe('UserController', () => {
 
   describe('updateUser', () => {
     it('should return the updated user.', async () => {
-      const userEntity = mockedUsersEntityValue[0];
+      const userEntity = mockedUsersEntity[0];
       const updatedUser: UserUpdatedDTO = {
         name: 'Updated Name',
         password: userEntity.password
@@ -248,7 +265,7 @@ describe('UserController', () => {
       await controller.updateUser(mockResponse, mockRequest, userEntity.id, updatedUser);
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.send).toHaveBeenCalledWith(UserEntity.parserUserPucblicEntityToDTO({
+      expect(mockResponse.send).toHaveBeenCalledWith(UserEntity.parserUserPublicEntityToDTO({
         ...userEntity,
         ...updatedUser
       }));
@@ -294,7 +311,7 @@ describe('UserController', () => {
 
   describe('deleteUserById', () => {
     it('should return the deleted user', async () => {
-      const foundUser = mockedUsersEntityValue[0];
+      const foundUser = mockedUsersEntity[0];
 
       jest.spyOn(service, 'findUserById').mockResolvedValue(foundUser);
       jest.spyOn(service, 'deleteUser').mockResolvedValue(1);
@@ -322,7 +339,7 @@ describe('UserController', () => {
     });
 
     it('should return "Not delete." when deleteUser fails', async () => {
-      const foundUser = mockedUsersEntityValue[0];
+      const foundUser = mockedUsersEntity[0];
 
       jest.spyOn(service, 'findUserById').mockResolvedValue(foundUser);
       jest.spyOn(service, 'deleteUser').mockResolvedValue(0);

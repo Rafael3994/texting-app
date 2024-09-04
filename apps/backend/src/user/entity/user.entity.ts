@@ -50,7 +50,7 @@ export class UserEntity {
     return userDTO;
   };
 
-  static parserUserPucblicEntityToDTO = (userEntity: UserPublicDTO): UserPublicDTO => {
+  static parserUserPublicEntityToDTO = (userEntity: UserPublicDTO): UserPublicDTO => {
     const userDTO: UserPublicDTO = {
       name: userEntity.name,
       email: userEntity.email,
