@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TextEntity } from './entity/text.entity';
 import { Repository } from 'typeorm';
@@ -13,18 +13,22 @@ export class TextService {
     ) { }
 
     async findTextById(id: string): Promise<TextEntity> {
+        if (!id) throw new BadRequestException();
         return await this.textRepository.findOne({ where: { id } })
     }
 
     async createText(text: TextCreateDTO): Promise<TextEntity> {
+        if (!text) throw new BadRequestException();
         return await this.textRepository.save(text);
     }
 
     async updateText(text: TextDTO): Promise<TextEntity> {
+        if (!text) throw new BadRequestException();
         return await this.textRepository.save(text);
     }
 
     async deleteText(id: string): Promise<number> {
+        if (!id) throw new BadRequestException();
         return (await this.textRepository.delete(id)).affected;
     }
 }

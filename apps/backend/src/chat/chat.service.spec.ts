@@ -7,15 +7,7 @@ import { Repository } from 'typeorm';
 import { ChatDTO } from './dto/chat.dto';
 import { ChatCreateDTO } from './dto/chat.create.dto';
 import { mockChatEntity } from './chat.controller.spec';
-
-type TypeMockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
-const mockRepository = <T = any>(): TypeMockRepository<T> => ({
-  findOne: jest.fn(),
-  create: jest.fn(),
-  find: jest.fn(),
-  save: jest.fn(),
-  delete: jest.fn(),
-});
+import { mockRepository, TypeMockRepository } from '@src/user/user.service.spec';
 
 describe('ChatService', () => {
   let service: ChatService;

@@ -8,8 +8,8 @@ import { UserUpdatedDTO } from './dto/user.updated.dto';
 import { mockedUsersEntity } from './user.controller.spec';
 const bcrypt = require('bcrypt');
 
-type TypeMockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
-const mockRepository = <T = any>(): TypeMockRepository<T> => ({
+export type TypeMockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+export const mockRepository = <T = any>(): TypeMockRepository<T> => ({
   findOne: jest.fn(),
   create: jest.fn(),
   find: jest.fn(),
