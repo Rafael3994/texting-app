@@ -37,34 +37,30 @@ export class ChatController {
         @Res() response,
         @Req() request,
         @Param('id') chatId: string
-    ) {
+    ): Promise<any> {
         try {
             if (!chatId) return response.status(400).send('Incorrect data.');
 
-            this.chatService.findChatById(chatId, ['user1', 'user2', 'texts'])
-                .then(res => {
-                    if (isNotFound(res)) return response.status(404).send('Not found.');
+            const chat = await this.chatService.findChatById(chatId, ['user1', 'user2', 'texts']);
 
-                    if (
-                        !isOwnOrAdmin(request.user, res.userId1)
-                        &&
-                        !isOwnOrAdmin(request.user, res.userId2)
-                    ) {
-                        response.status(401).send(`You don't have permission.`);
-                    }
+            if (isNotFound(chat)) return response.status(404).send('Not found.');
 
-                    return response
-                        .status(200)
-                        .send(ChatEntity.parserChatEntityToDTO(res));
-                })
-                .catch(err => {
-                    throw new Error(err);
-                });
+            if (
+                !isOwnOrAdmin(request.user, chat.userId1) &&
+                !isOwnOrAdmin(request.user, chat.userId2)
+            ) {
+                return response.status(401).send(`You don't have permission.`);
+            }
+
+            return response.status(200).send(
+                ChatEntity.parserChatEntityToDTO(chat)
+            );
         } catch (err) {
             this.logger.error('findChatById', err);
-            return response.status(500).send('Something was bad.');
+            return response.status(500).send('Something went wrong.');
         }
     }
+
 
     @ApiOperation({
         summary: 'Create a chat.',
@@ -81,24 +77,23 @@ export class ChatController {
         @Body('') chat: ChatCreateDTO
     ): Promise<any> {
         try {
-            if (!chat)
+            if (!chat) {
                 return response.status(400).send('Incorrect data.');
+            }
 
-            if (!(await this.userService.areUsersExists(chat.userId1, chat.userId2)))
+            const usersExist = await this.userService.areUsersExists(chat.userId1, chat.userId2);
+            if (!usersExist) {
                 return response.status(404).send('Not found.');
+            }
 
-            this.chatService.createChat(chat)
-                .then(res => {
-                    return response
-                        .status(201)
-                        .send(ChatEntity.parserChatEntityToDTO(res));
-                })
-                .catch(err => {
-                    throw new Error(err);
-                });
+            const createdChat = await this.chatService.createChat(chat);
+            return response
+                .status(201)
+                .send(ChatEntity.parserChatEntityToDTO(createdChat));
+
         } catch (err) {
             this.logger.error('createChat', err);
-            return response.status(500).send('Something was bad.');
+            return response.status(500).send('Something went wrong.');
         }
     }
 
@@ -118,38 +113,37 @@ export class ChatController {
         @Res() response,
         @Req() request,
         @Param('id') id: string,
-        @Body() chat: ChatDTO,
+        @Body() chat: ChatCreateDTO,
     ): Promise<any> {
         try {
-            if (!chat) return response.status(400).send('Incorrect data.');
+            if (!chat) {
+                return response.status(400).send('Incorrect data.');
+            }
 
             const foundChat = await this.chatService.findChatById(id);
-            if (!foundChat) return response.status(404).send('Not found.');
+            if (!foundChat) {
+                return response.status(404).send('Not found.');
+            }
 
             if (
-                !isOwnOrAdmin(request.user, foundChat.userId1)
-                &&
+                !isOwnOrAdmin(request.user, foundChat.userId1) &&
                 !isOwnOrAdmin(request.user, foundChat.userId2)
             ) {
                 throw new ForbiddenException('You do not have permission to access this resource');
             }
 
-            if (!(await this.userService.areUsersExists(chat.userId1, chat.userId2)))
+            const usersExist = await this.userService.areUsersExists(chat.userId1, chat.userId2);
+            if (!usersExist) {
                 return response.status(404).send('Not found.');
+            }
 
-            const newChat = { ...ChatEntity.parserChatEntityToDTO(foundChat), ...chat }
+            const updatedChatData = { ...ChatEntity.parserChatEntityToDTO(foundChat), ...chat };
+            const updatedChat = await this.chatService.updateChat(updatedChatData);
 
-            this.chatService
-                .updateChat(newChat)
-                .then((res: ChatEntity) => {
-                    return response.status(201).send(ChatEntity.parserChatPublicEntityToDTO(res));
-                })
-                .catch((err) => {
-                    throw new Error(err);
-                });
+            return response.status(201).send(ChatEntity.parserChatPublicEntityToDTO(updatedChat));
         } catch (err) {
             this.logger.error('createChat', err);
-            return response.status(500).send('err: ' + err);
+            return response.status(500).send('Something went wrong.');
         }
     }
 
@@ -169,37 +163,38 @@ export class ChatController {
         @Param('id') id: string
     ): Promise<any> {
         try {
-            const foundChat = await this.chatService.findChatById(id, ['texts'])
-            if (!foundChat) return response.status(404).send('Not found.');
-
-            if (
-                !isOwnOrAdmin(request.user, foundChat.userId1)
-                &&
-                !isOwnOrAdmin(request.user, foundChat.userId2)
-            ) {
-                throw new ForbiddenException('You do not have permission to access this resource');
+            const foundChat = await this.chatService.findChatById(id, ['texts']);
+            if (!foundChat) {
+                return response.status(404).send('Not found.');
             }
 
-            await Promise.all([
-                foundChat.texts.map((text: TextDTO) => {
-                    this.textService.deleteText(text.id);
-                })
-            ]);
-
-            this.chatService
-                .deleteChat(id)
-                .then((res: number) => {
-                    if (res > 0) return response.status(200).send(
-                        ChatEntity.parserChatEntityToDTO(foundChat)
-                    );
-                    return response.status(404).send('Not Delete.');
-                })
-                .catch((err) => {
-                    throw new Error(err);
+            if (
+                !isOwnOrAdmin(request.user, foundChat.userId1) &&
+                !isOwnOrAdmin(request.user, foundChat.userId2)
+            ) {
+                return response.status(403).send({
+                    statusCode: 403,
+                    message: 'You do not have permission to access this resource',
                 });
+            }
+
+            // Eliminar los textos asociados al chat
+            for (const text of foundChat.texts) {
+                await this.textService.deleteText(text.id);
+            }
+
+            // Eliminar el chat
+            const deleteResult = await this.chatService.deleteChat(id);
+            if (deleteResult > 0) {
+                return response.status(200).send(
+                    ChatEntity.parserChatEntityToDTO(foundChat)
+                );
+            } else {
+                return response.status(404).send('Not Delete.');
+            }
         } catch (error) {
             this.logger.error('deleteById', error);
-            response.status(500).send('Something was bad.');
+            return response.status(500).send('Something went wrong.');
         }
     }
 }

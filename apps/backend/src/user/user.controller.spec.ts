@@ -7,6 +7,17 @@ import { UserDTO } from './dto/user.dto';
 import { UserEntity, UserRoles } from './entity/user.entity';
 import { UserUpdatedDTO } from './dto/user.updated.dto';
 
+export const mockRequest = {
+  user: { id: '09398f56-93e4-4a2f-96e8-342683f7d35a', role: UserRoles.USER },
+};
+
+export const mockResponse = {
+  status: jest.fn().mockReturnThis(),
+  send: jest.fn().mockReturnThis(),
+  json: jest.fn().mockReturnThis(),
+};
+
+
 export const mockedUsersValue: UserDTO[] = [
   {
     id: "40f6fb9b-9f77-4dbd-8497-1d030ba11081",
@@ -67,33 +78,24 @@ export const mockedUsersEntityValue: UserEntity[] = [
   },
 ];
 
+export const mockUsersService = {
+  findAllUsers: () => mockedUsersValue,
+  findUserById: () => mockedUsersValue[0],
+  createUser: () => mockedUsersValue,
+  updateUser: () => mockedUsersValue,
+  findUserByEmail: () => mockedUsersEntityValue[0],
+  deleteUser: () => mockedUsersValue,
+  areUsersExists: () => true || false,
+};
+
 describe('UserController', () => {
   let controller: UserController;
   let service: UserService;
 
-  const mockUsersService = {
-    findAllUsers: () => mockedUsersValue,
-    findUserById: () => mockedUsersValue[0],
-    createUser: () => mockedUsersValue,
-    updateUser: () => mockedUsersValue,
-    findUserByEmail: () => mockedUsersEntityValue[0],
-    deleteUser: () => mockedUsersValue,
-  };
-
-  const mockRequest = {
-    user: { id: '09398f56-93e4-4a2f-96e8-342683f7d35a', role: UserRoles.USER },
-  };
-
-  const mockResponse = {
-    status: jest.fn().mockReturnThis(),
-    send: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnThis(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [UserService, Logger]
+      providers: [UserService, Logger],
     })
       .overrideProvider(UserService)
       .useValue(mockUsersService)

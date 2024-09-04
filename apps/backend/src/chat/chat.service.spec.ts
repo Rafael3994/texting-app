@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { ChatDTO } from './dto/chat.dto';
 import { mockedUsersEntityValue } from '@src/user/user.controller.spec';
 import { ChatCreateDTO } from './dto/chat.create.dto';
+import { mockChatEntity } from './chat.controller.spec';
 
 type TypeMockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const mockRepository = <T = any>(): TypeMockRepository<T> => ({
@@ -16,43 +17,6 @@ const mockRepository = <T = any>(): TypeMockRepository<T> => ({
   save: jest.fn(),
   delete: jest.fn(),
 });
-
-const mockChatDTO: ChatDTO[] = [
-  {
-    id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
-  },
-  {
-    id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
-  },
-]
-
-const mockChatEntity: ChatEntity[] = [
-  {
-    id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
-    user1: mockedUsersEntityValue[0],
-    user2: mockedUsersEntityValue[1],
-    texts: []
-  },
-  {
-
-    id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
-    userId1: "09398f56-93e4-4a2f-96e8-342683f7d35a",
-    userId2: "0e2431eb-a822-4e34-aad1-490721012e87",
-    createdTime: new Date(),
-    user1: mockedUsersEntityValue[0],
-    user2: mockedUsersEntityValue[1],
-    texts: []
-  },
-]
 
 describe('ChatService', () => {
   let service: ChatService;
