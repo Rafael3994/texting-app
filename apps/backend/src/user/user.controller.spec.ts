@@ -109,7 +109,7 @@ describe('UserController', () => {
   let service: UserService;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [UserService, Logger],

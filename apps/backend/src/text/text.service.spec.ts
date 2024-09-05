@@ -12,7 +12,7 @@ describe('TextService', () => {
   const mockTextId = mockTextEntity[0].id;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TextService,

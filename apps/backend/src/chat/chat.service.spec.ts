@@ -3,8 +3,6 @@ import { ChatService } from './chat.service';
 import { BadRequestException, Logger } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity';
-import { Repository } from 'typeorm';
-import { ChatDTO } from './dto/chat.dto';
 import { ChatCreateDTO } from './dto/chat.create.dto';
 import { mockChatEntity } from './chat.controller.spec';
 import { mockRepository, TypeMockRepository } from '@src/user/user.service.spec';
@@ -15,7 +13,7 @@ describe('ChatService', () => {
   const mockChatId = '123456789';
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChatService,

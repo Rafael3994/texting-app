@@ -63,7 +63,7 @@ describe('ChatController', () => {
   const mockChatId: string = '123456789';
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ChatController],
       providers: [

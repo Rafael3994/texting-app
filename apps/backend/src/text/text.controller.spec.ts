@@ -14,11 +14,19 @@ import { TextCreateDTO } from './dto/text.create.dto';
 export const mockTextEntity: TextEntity[] = [
   {
     id: '2ab8cd0f9f68ab64bdaf9cf9e626a',
-    chatId: mockChatEntity[0].id,
+    chatId: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
     userId: mockedUsersEntity[1].id,
     text: 'lorem lorem lorem',
     createdTime: undefined,
-    chat: mockChatEntity[0],
+    chat: {
+      id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
+      userId1: mockedUsersEntity[0].id,
+      userId2: mockedUsersEntity[1].id,
+      createdTime: undefined,
+      user1: mockedUsersEntity[0],
+      user2: mockedUsersEntity[1],
+      texts: []
+    },
     user: mockedUsersEntity[0]
   }
 ];
@@ -26,17 +34,22 @@ export const mockTextEntity: TextEntity[] = [
 export const mockTextDTO: TextDTO[] = [
   {
     id: '2ab8cd0f9f68ab64bdaf9cf9e626a',
-    chatId: mockChatDTO[0].id,
+    chatId: 'f1200e0e-080d-4f28-ace1-aae1c73af2a0',
     userId: mockedUsersDTO[1].id,
     text: 'lorem lorem lorem',
     createdTime: undefined,
-    chat: mockChatDTO[0],
+    chat: {
+      id: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
+      userId1: mockedUsersEntity[0].id,
+      userId2: mockedUsersEntity[1].id,
+      createdTime: undefined,
+    },
     user: mockedUsersPublicDTO[0]
   }
 ];
 
 export const mockTextCreateDTO: TextCreateDTO = {
-  chatId: mockChatDTO[0].id,
+  chatId: "f1200e0e-080d-4f28-ace1-aae1c73af2a0",
   userId: mockedUsersDTO[1].id,
   text: 'lorem lorem lorem',
 }
@@ -55,7 +68,7 @@ describe('TextController', () => {
   const mockTextId: string = '2ab8cd0f9f68ab64bdaf9cf9e626a';
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TextController],
       providers: [
