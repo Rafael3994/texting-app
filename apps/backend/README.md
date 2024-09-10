@@ -1,73 +1,72 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Backend Texting-App
+This is the project is the backend of texting-app. Here, we explain all you need for use the backend.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+- [Backend Texting-App](#backend-texting-app)
+    - [Installation 🚀](#installation-)
+    - [API ⚙️](#api-️)
+    - [Testing 🚧](#testing-)
+    - [Build with 🔨](#build-with-)
+    - [Author 👑](#author-)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+### Installation 🚀
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+You need use data base, I used a container docker with mysql. (I recommened it)
+In the file Database_structure.sql, there are the structure of the data base.
+With this you have all of necessary to create the data base.
 
-## Installation
 
-```bash
-$ npm install
+Clon the repository
+```
+git clone https://github.com/Rafael3994/texting-app.git
+```
+Go the backend folder and install the dependencies.
+```
+cd apps/backend
+
+## npm:
+npm install 
+```
+Copy the file .env.template and remove the .template. With this, fill the filds in the file
+```
+## IP from the machine you have the project active.
+  HOST=
+## Port when the project will be listing.
+  PORT=
+## User name from the DB.
+USER_NAME=
+## Password from the DB.
+  PASSWORD=
+## Name of the DB.
+  DATABASE=
+## HASH FOR ENCRYPT JWT
+  SECRET_KEY_JWT=
+## HASH FOR ENCRYPT REFRESH JWT
+  SECRET_REFRESH_KEY_JWT=
+```
+Start the project.
+```
+npm run dev
 ```
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### API ⚙️
+For check the api, start the project and go to this direction.
+```
+http://{HOST}:{PORT}/api
 ```
 
-## Test
+### Testing 🚧
+On the modules *user*, *chat* and *text*, I have the unit test for the controllers and services.
 
-```bash
-# unit tests
-$ npm run test
+### Build with 🔨
+* [Node.js](https://nodejs.org/es/) - Runtime
+* [NestJs](https://nestjs.com/) - Backend Framework
+* [Typescript](https://www.typescriptlang.org/) - Programming Language
+* [Typeorm](https://typeorm.io/) - ORM
+* [Jest](https://jestjs.io/) - Testing Framework
+* [Mysql](https://www.mysql.com) - Data base
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+### Author 👑
+Rafael Garcia Perez
+[GitHub - Rafael3994](https://github.com/Rafael3994)
+[Linkedin - Rafael3994](https://www.linkedin.com/in/rafael3994/)
