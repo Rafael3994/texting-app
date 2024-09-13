@@ -1,4 +1,4 @@
-.env
+src/service/service.config.ts
 
 # Logs
 logs

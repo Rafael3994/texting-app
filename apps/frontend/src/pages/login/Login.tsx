@@ -1,15 +1,39 @@
 import bubbleSVG from '@src/assets/bubble.svg';
 import CustomInputEmail from '@src/components/presentational/form//CustomInputEmail';
 import CustomInputPassword from '@src/components/presentational/form/CustomInputPassword';
-import { useLogin } from './useLogin';
 import NotificacionError from '@src/components/NotificacionError';
+import { useLogin } from './useLogin';
+import { useState } from 'react';
+
+export interface IFormLogin {
+    email: string;
+    password: string;
+}
+
+export interface IPropsCustomInputsFormLogin {
+    formLogin: IFormLogin
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
 export default function Login() {
+    const [formLogin, setFormLogin] = useState<IFormLogin>(
+        {
+            email: '',
+            password: '',
+        }
+    )
 
-    // CREATE TWO STATE FOR EMAIL AND PASS
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const _value = value.trim()
+        setFormLogin((prevState) => ({
+            ...prevState,
+            [name]: _value,
+        }));
+    };
 
     // PASS THIS STATES
-    const { handleSignIn } = useLogin()
+    const { handleSignIn } = useLogin({ formLogin })
 
     return (
         // TODO: IF THE USER HAS COOKIES, GO TO THE LOBBY
@@ -28,10 +52,10 @@ export default function Login() {
                     <h2 className='text-stone-800 font-bold text-xl md:text-3xl'>LOGIN</h2>
 
                     <div className='h-1/4 w-10/12 mt-3'>
-                        <CustomInputEmail />
+                        <CustomInputEmail formLogin={formLogin} handleChange={handleChange} />
                     </div>
                     <div className='h-1/4 w-10/12 mt-3'>
-                        <CustomInputPassword />
+                        <CustomInputPassword formLogin={formLogin} handleChange={handleChange} />
                     </div>
 
                     <button

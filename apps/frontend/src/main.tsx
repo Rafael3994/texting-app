@@ -15,7 +15,6 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   // TODO: CREATE A NEW USER PAGE
-  // TODO:  LOBBY PAGE
   {
     path: 'lobby',
     element: <div><h1>LOBBY</h1></div>
