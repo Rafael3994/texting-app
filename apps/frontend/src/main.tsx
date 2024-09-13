@@ -6,18 +6,19 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import Login from './pages/login/Login.tsx';
+import LoginPage from './pages/login/Login.tsx';
+import LobbyPage from './pages/lobby/Lobby.tsx';
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <LoginPage />,
   },
   // TODO: CREATE A NEW USER PAGE
   {
     path: 'lobby',
-    element: <div><h1>LOBBY</h1></div>
+    element: <LobbyPage />
   },
   {
     path: '*',

@@ -7,6 +7,11 @@ export interface ITokens {
     refresh_token: string;
 }
 
+enum ETokens {
+    ACCESS_TOKEN = "access_token",
+    REFRESH_TOKEN = "refresh_token"
+}
+
 const MODULE_NAME_URL: string = `${BACKEND_URL}auth`
 
 export const logIn = (credentials: IFormLogin) => {
@@ -16,6 +21,11 @@ export const logIn = (credentials: IFormLogin) => {
 }
 
 export const saveTokensInLocalStorage = (tokens: ITokens) => {
-    localStorage.setItem("access_token", tokens.access_token);
-    localStorage.setItem("refresh_token", tokens.refresh_token);
+    localStorage.setItem(ETokens.ACCESS_TOKEN, tokens.access_token);
+    localStorage.setItem(ETokens.REFRESH_TOKEN, tokens.refresh_token);
+}
+
+export const deleteTokensInLocalStorage = () => {
+    localStorage.removeItem(ETokens.ACCESS_TOKEN)
+    localStorage.removeItem(ETokens.REFRESH_TOKEN)
 }

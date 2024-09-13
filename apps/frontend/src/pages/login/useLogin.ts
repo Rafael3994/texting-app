@@ -6,7 +6,7 @@ import { IFormLogin } from "./Login";
 export function useLogin({ formLogin }: { formLogin: IFormLogin }) {
     const navigate = useNavigate();
 
-    const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
             e.preventDefault()
             if (!isSanitatedForm()) return

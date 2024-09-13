@@ -15,7 +15,7 @@ export interface IPropsCustomInputsFormLogin {
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function Login() {
+export default function LoginPage() {
     const [formLogin, setFormLogin] = useState<IFormLogin>(
         {
             email: '',
@@ -32,7 +32,6 @@ export default function Login() {
         }));
     };
 
-    // PASS THIS STATES
     const { handleSignIn } = useLogin({ formLogin })
 
     return (
@@ -50,20 +49,21 @@ export default function Login() {
             <section className='h-80 w-4/6 md:w-3/6 lg:w-6/12 xl:w-4/12 bg-white rounded-lg z-10 shadow-2xl mt-[-4rem]'>
                 <div className='h-full w-full flex flex-col items-center my-4'>
                     <h2 className='text-stone-800 font-bold text-xl md:text-3xl'>LOGIN</h2>
+                    <div className='h-full w-full'>
+                        <form className='w-full h-full flex flex-col items-center' onSubmit={handleSignIn}>
+                            <div className='h-1/4 w-10/12 mt-3'>
+                                <CustomInputEmail formLogin={formLogin} handleChange={handleChange} />
+                            </div>
+                            <div className='h-1/4 w-10/12 mt-3'>
+                                <CustomInputPassword formLogin={formLogin} handleChange={handleChange} />
+                            </div>
 
-                    <div className='h-1/4 w-10/12 mt-3'>
-                        <CustomInputEmail formLogin={formLogin} handleChange={handleChange} />
+                            <button
+                                className="mt-4 bg-dark-green hover:bg-dark-green-hover text-white font-bold h-10 w-2/5 md:w-3/12 rounded-full">
+                                Sing In
+                            </button>
+                        </form>
                     </div>
-                    <div className='h-1/4 w-10/12 mt-3'>
-                        <CustomInputPassword formLogin={formLogin} handleChange={handleChange} />
-                    </div>
-
-                    <button
-                        onClick={handleSignIn}
-                        className="mt-4 bg-dark-green hover:bg-dark-green-hover text-white font-bold h-10 w-2/5 md:w-3/12 rounded-full">
-                        Sing In
-                    </button>
-
                 </div>
             </section >
         </div >

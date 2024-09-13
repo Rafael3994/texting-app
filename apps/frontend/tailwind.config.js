@@ -11,6 +11,11 @@ export default {
         "dark-green-hover": "#027562",
         "white-font": '#fdfefe',
         "main-background": '#e4e3de',
+        "color-sidebar": '#202b33',
+        "menu-chats-background": '#111a21',
+        "item-menu-selected": '#2a3942',
+        "clipboard-background": '#0c151c',
+        "text-background": '#005c4b',
       }
     },
   },
