@@ -1,10 +1,20 @@
 import bubbleSVG from '@src/assets/bubble.svg';
-import CustomInputEmail from '@src/components/presentational/CustomInputEmail';
-import CustomInputPassword from '@src/components/presentational/CustomInputPassword';
+import CustomInputEmail from '@src/components/presentational/form//CustomInputEmail';
+import CustomInputPassword from '@src/components/presentational/form/CustomInputPassword';
+import { useLogin } from './useLogin';
+import NotificacionError from '@src/components/NotificacionError';
 
 export default function Login() {
+
+    // CREATE TWO STATE FOR EMAIL AND PASS
+
+    // PASS THIS STATES
+    const { handleSignIn } = useLogin()
+
     return (
+        // TODO: IF THE USER HAS COOKIES, GO TO THE LOBBY
         <div className='flex justify-center items-center flex-col'>
+            <NotificacionError />
             <header className='h-56 w-full bg-main-green flex justify-center items-center'>
                 <div className="h-1/6 w-3/6 md:w-3/6 lg:w-6/12 xl:w-4/12">
                     <div className='flex flex-row items-center h-full w-full'>
@@ -24,7 +34,9 @@ export default function Login() {
                         <CustomInputPassword />
                     </div>
 
-                    <button className="mt-4 bg-dark-green hover:bg-dark-green-hover text-white font-bold h-10 w-2/5 md:w-3/12 rounded-full">
+                    <button
+                        onClick={handleSignIn}
+                        className="mt-4 bg-dark-green hover:bg-dark-green-hover text-white font-bold h-10 w-2/5 md:w-3/12 rounded-full">
                         Sing In
                     </button>
 
