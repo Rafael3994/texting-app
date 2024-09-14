@@ -29,3 +29,14 @@ export const deleteTokensInLocalStorage = () => {
     localStorage.removeItem(ETokens.ACCESS_TOKEN)
     localStorage.removeItem(ETokens.REFRESH_TOKEN)
 }
+
+export const getTokensFromLocalStorage = () => {
+
+}
+
+export const isTokensInLocalStorage = (): boolean => {
+    const access = localStorage.getItem(ETokens.ACCESS_TOKEN)
+    const refresh = localStorage.getItem(ETokens.REFRESH_TOKEN)
+    return access !== null && refresh !== null
+
+}

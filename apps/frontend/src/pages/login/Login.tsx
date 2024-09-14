@@ -23,16 +23,7 @@ export default function LoginPage() {
         }
     )
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        const _value = value.trim()
-        setFormLogin((prevState) => ({
-            ...prevState,
-            [name]: _value,
-        }));
-    };
-
-    const { handleSignIn } = useLogin({ formLogin })
+    const { handleSignIn, handleChange } = useLogin({ formLogin, setFormLogin })
 
     return (
         // TODO: IF THE USER HAS COOKIES, GO TO THE LOBBY

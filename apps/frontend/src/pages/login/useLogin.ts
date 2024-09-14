@@ -2,8 +2,9 @@ import { toastErrorToShow } from "@src/components/NotificacionError";
 import { logIn, saveTokensInLocalStorage } from "@src/service/auth.service";
 import { useNavigate } from "react-router-dom";
 import { IFormLogin } from "./Login";
+import { Dispatch, SetStateAction } from "react";
 
-export function useLogin({ formLogin }: { formLogin: IFormLogin }) {
+export function useLogin({ formLogin, setFormLogin }: { formLogin: IFormLogin, setFormLogin: Dispatch<SetStateAction<IFormLogin>> }) {
     const navigate = useNavigate();
 
     const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,13 +21,22 @@ export function useLogin({ formLogin }: { formLogin: IFormLogin }) {
         }
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const _value = value.trim()
+        setFormLogin((prevState) => ({
+            ...prevState,
+            [name]: _value,
+        }));
+    };
+
     function isSanitatedForm(): boolean {
         let isSanitated = true;
         if (!validateEmail(formLogin.email)) {
             toastErrorToShow('Invalid email address.')
             isSanitated = false
         }
-        if (formLogin.password.length < 6) {
+        if (formLogin.password.length < 4) {
             toastErrorToShow('Password must be at least 6 characters long.')
             isSanitated = false
         }
@@ -49,6 +59,7 @@ export function useLogin({ formLogin }: { formLogin: IFormLogin }) {
     }
 
     return {
-        handleSignIn: handleSignIn
+        handleSignIn: handleSignIn,
+        handleChange: handleChange,
     }
 }
