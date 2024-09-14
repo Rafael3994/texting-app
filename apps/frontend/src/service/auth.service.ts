@@ -30,13 +30,19 @@ export const deleteTokensInLocalStorage = () => {
     localStorage.removeItem(ETokens.REFRESH_TOKEN)
 }
 
-export const getTokensFromLocalStorage = () => {
-
-}
-
 export const isTokensInLocalStorage = (): boolean => {
     const access = localStorage.getItem(ETokens.ACCESS_TOKEN)
     const refresh = localStorage.getItem(ETokens.REFRESH_TOKEN)
     return access !== null && refresh !== null
 
 }
+
+/*
+
+1. Almacena el Access Token en la memoria de la aplicación.
+2. Almacena el Refresh Token en una httpOnly cookie.
+3. Usa un interceptor para manejar la expiración del Access Token y la solicitud de un nuevo token usando el Refresh Token.
+4. Configura Axios para interceptar errores 401 y tratar de obtener un nuevo Access Token.
+5. Reintenta la solicitud original después de obtener un nuevo Access Token.
+
+*/

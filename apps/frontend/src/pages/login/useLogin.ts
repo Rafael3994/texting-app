@@ -3,9 +3,12 @@ import { logIn, saveTokensInLocalStorage } from "@src/service/auth.service";
 import { useNavigate } from "react-router-dom";
 import { IFormLogin } from "./Login";
 import { Dispatch, SetStateAction } from "react";
+import { useTokensContext } from "@src/context/Tokens.context";
 
 export function useLogin({ formLogin, setFormLogin }: { formLogin: IFormLogin, setFormLogin: Dispatch<SetStateAction<IFormLogin>> }) {
     const navigate = useNavigate();
+
+    const { saveTokens } = useTokensContext()
 
     const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -13,6 +16,7 @@ export function useLogin({ formLogin, setFormLogin }: { formLogin: IFormLogin, s
             if (!isSanitatedForm()) return
             const tokens = await userLoginConnection()
             if (!tokens) return toastErrorToShow(`YOU COULDN'T LOG IN`)
+            saveTokens(tokens)
             saveTokensInLocalStorage(tokens)
             return navigate('/lobby');
         } catch (err) {

@@ -6,8 +6,10 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import LoginPage from './pages/login/Login.tsx';
-import LobbyPage from './pages/lobby/Lobby.tsx';
+import LoginPage from '@src/pages/login/Login.tsx';
+import LobbyPage from '@src/pages/lobby/Lobby.tsx';
+import MyProvider from '@src/context/Tokens.context';
+
 
 
 const router = createBrowserRouter([
@@ -29,6 +31,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MyProvider>
+      <RouterProvider router={router} />
+    </MyProvider>
   </React.StrictMode>,
 )
