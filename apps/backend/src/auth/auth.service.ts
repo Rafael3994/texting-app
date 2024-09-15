@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@src/user/user.service';
 import { TokensDTO } from './dto/tokens.dto';
@@ -11,6 +11,7 @@ export class AuthService {
     constructor(
         private usersService: UserService,
         private jwtService: JwtService,
+        private logger: Logger,
     ) { }
 
     async signIn(email: string, password: string): Promise<TokensDTO> {
@@ -30,11 +31,15 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string) {
-        const user = this.jwtService.verify(
-            refreshToken,
-            { secret: process.env.SECRET_REFRESH_KEY_JWT }
-        );
-        return await this.genereateTokens(user);
+        try {
+            const user = this.jwtService.verify(
+                refreshToken,
+                { secret: process.env.SECRET_REFRESH_KEY_JWT }
+            );
+            return await this.genereateTokens(user);
+        } catch (err) {
+            this.logger.error('err refreshToken:', err)
+        }
     }
 
     async genereateTokens(user: UserEntity): Promise<TokensDTO> {
@@ -44,13 +49,15 @@ export class AuthService {
             email: user.email,
             role: user.role,
         };
+
         const [access_token, refresh_token] = await Promise.all([
             this.jwtService.signAsync(payload),
-            this.jwtService.signAsync({ payload }, {
+            this.jwtService.signAsync(payload, {
                 secret: process.env.SECRET_REFRESH_KEY_JWT,
                 expiresIn: '7d',
             })
         ]);
+
         return {
             access_token,
             refresh_token,

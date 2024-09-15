@@ -33,8 +33,14 @@ export class AuthController {
         @Body() signAuth: AuthDTO
     ) {
         try {
+            const tokens = await this.authService.signIn(signAuth.email, signAuth.password)
+            response.cookie('refresh_cookie', tokens.refresh_token, {
+                httpOnly: true,
+                sameSite: 'Strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            })
             return response.status(200).send(
-                await this.authService.signIn(signAuth.email, signAuth.password)
+                tokens
             );
         } catch (error) {
             this.logger.error('signIn', error);
@@ -59,7 +65,8 @@ export class AuthController {
         @Res() response,
     ) {
         try {
-            const refreshToken = request.headers['authorization']?.split(' ')[1];
+            const refreshToken = request.headers['x-refresh-token']
+
             if (!(await this.blackListRefreshTokenService.isTokenBlacklisted(refreshToken)))
                 return response.status(401).send({
                     "statusCode": 401,

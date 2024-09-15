@@ -4,7 +4,6 @@ import { isTokensInLocalStorage } from '@src/service/auth.service'
 import { Navigate } from 'react-router-dom'
 
 export default function LobbyPage() {
-
     return (
         isTokensInLocalStorage() ? (
             <div className='h-full w-full' >
