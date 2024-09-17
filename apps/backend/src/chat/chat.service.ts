@@ -27,7 +27,7 @@ export class ChatService {
                 { userId1: userId },
                 { userId2: userId }
             ],
-            relations: ['texts']
+            relations: ['texts', 'user1', 'user2']
         })
     }
 
