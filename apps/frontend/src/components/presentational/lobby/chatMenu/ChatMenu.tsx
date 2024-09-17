@@ -1,7 +1,11 @@
 import addChatSVG from '@src/assets/addChat.svg'
-import Avatar from 'react-avatar';
+import useChatMenu from './useChatMenu';
+import { ItemChatMenu } from './Item/ItemChatMenu';
 
 export default function ChatMenu() {
+
+    const { chats } = useChatMenu()
+
     return (
         <div className="w-96 h-full bg-menu-chats-background">
 
@@ -19,25 +23,18 @@ export default function ChatMenu() {
 
                 <div className='w-full flex-grow overflow-y-auto'>
                     {
-                        [...Array(20).keys()].map((item, index) => {
-                            return <ItemChatMenu key={index} />
-                        })
+                        chats.length > 0 ?
+                            chats.map((item, index) => {
+                                return <ItemChatMenu infoChat={item} key={index} />
+                            })
+                            :
+                            <div className='h-full w-full flex justify-center'>
+                                <h1 className='font-semibold text-md mt-10'>Without chats</h1>
+                            </div>
                     }
                 </div>
 
             </div>
-        </div>
-    )
-}
-
-export function ItemChatMenu() {
-    return (
-        <div className='relative w-full h-20'>
-            <div className='h-full w-full flex items-center px-5'>
-                <Avatar name="Foo Bar" size="45" textSizeRatio={2.7} className='rounded-full' />
-                <p className='ml-8'>Foo Bar</p>
-            </div>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2/3 border-b-[1px] border-white"></div>
         </div>
     )
 }

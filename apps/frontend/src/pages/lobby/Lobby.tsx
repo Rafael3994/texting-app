@@ -1,4 +1,4 @@
-import ChatMenu from '@src/components/presentational/lobby/ChatMenu'
+import ChatMenu from '@src/components/presentational/lobby/chatMenu/ChatMenu'
 import SideBar from '@src/components/presentational/lobby/SideBar'
 import { isTokensInLocalStorage } from '@src/service/auth.service'
 import { Navigate } from 'react-router-dom'
