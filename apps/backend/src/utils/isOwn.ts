@@ -1,5 +1,3 @@
-import { UserDTO } from "@src/user/dto/user.dto";
-
-export const isOwn = (userSignIn: UserDTO, idPass: string): boolean => {
-    return userSignIn.id === idPass;
+export const isOwn = (userSignIn: string, idPass: string): boolean => {
+    return userSignIn === idPass;
 }

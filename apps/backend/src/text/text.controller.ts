@@ -88,7 +88,7 @@ export class TextController {
             }
 
             const foundChat = await this.chatService.findChatById(text.chatId);
-            const hasPermission = isOwn(request.user, foundChat.userId1) || isOwn(request.user, foundChat.userId2);
+            const hasPermission = isOwn(request.user.id, foundChat.userId1) || isOwn(request.user.id, foundChat.userId2);
 
             if (!hasPermission) {
                 return response.status(401).send(`You don't have permission.`);
@@ -133,7 +133,7 @@ export class TextController {
             }
 
             const foundChat = await this.chatService.findChatById(foundText.chatId);
-            if (!isOwn(request.user, foundChat.userId1) && !isOwn(request.user, foundChat.userId2)) {
+            if (!isOwn(request.user.id, foundChat.userId1) && !isOwn(request.user.id, foundChat.userId2)) {
                 return response.status(401).send(`You don't have permission.`);
             }
 

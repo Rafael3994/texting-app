@@ -20,6 +20,17 @@ export class ChatService {
         });
     }
 
+    findAllChatByUserId(userId: string) {
+        if (!userId) throw new BadRequestException()
+        return this.chatRepository.find({
+            where: [
+                { userId1: userId },
+                { userId2: userId }
+            ],
+            relations: ['texts']
+        })
+    }
+
     findAll(): Promise<ChatEntity[]> {
         return this.chatRepository.find();
     }

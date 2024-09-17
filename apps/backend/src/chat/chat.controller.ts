@@ -11,6 +11,8 @@ import { TextService } from '@src/text/text.service';
 import { TextDTO } from '@src/text/dto/text.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@nestjs/swagger';
 import { ChatCreateDTO } from './dto/chat.create.dto';
+import { isOwn } from '@src/utils/isOwn';
+import { UserRoles } from '@src/user/entity/user.entity';
 
 @ApiBearerAuth()
 @ApiTags('CHAT')
@@ -60,6 +62,54 @@ export class ChatController {
             return response.status(500).send('Something went wrong.');
         }
     }
+
+    @ApiOperation({
+        summary: 'Get all chats from a user.',
+        description: 'This endpoint is enabled for the user logged and users with role admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns all chats found.',
+        type: PickType(ChatDTO, ['user1', 'user2', 'texts'] as const),
+        isArray: true,
+    })
+    @Get('user/:id')
+    async findAllChatByUserId(
+        @Res() response,
+        @Req() request,
+        @Param('id') userId: string
+    ): Promise<any> {
+        try {
+            if (!userId) return response.status(400).send('Incorrect data.');
+
+            const userFound = await this.userService.findUserById(userId);
+
+            if (isNotFound(userFound)) return response.status(404).send('Not found.');
+
+            if (
+                !isOwn(request.user.id, userFound.id) && request.user.role !== UserRoles.ADMIN
+            ) {
+                return response.status(401).send(`You don't have permission.`);
+            }
+
+            const allChats = await this.chatService.findAllChatByUserId(userId)
+
+            if (isNotFound(allChats)) {
+                return response.status(204).send([]);
+            }
+
+
+            return response.status(200).send(
+                allChats.map(chat => {
+                    return ChatEntity.parserChatEntityToDTO(chat)
+                })
+            );
+        } catch (err) {
+            this.logger.error('findChatById', err);
+            return response.status(500).send('Something went wrong.');
+        }
+    }
+
 
 
     @ApiOperation({
