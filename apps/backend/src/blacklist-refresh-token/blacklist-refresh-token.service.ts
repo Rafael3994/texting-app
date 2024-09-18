@@ -14,6 +14,7 @@ export class BlacklistRefreshTokenService {
 
     async createBlacklistToken(token: string): Promise<BlacklistRefreshTokenEntity> {
         try {
+            console.log('XXX token for create', token);
             return await this.blacklistRepository.save({ token });
         } catch (err) {
             this.logger.error('createBlacklistToken err:', err)

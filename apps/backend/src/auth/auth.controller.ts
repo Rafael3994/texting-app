@@ -67,12 +67,13 @@ export class AuthController {
         try {
             const refreshToken = request.headers['x-refresh-token']
 
-            if (!(await this.blackListRefreshTokenService.isTokenBlacklisted(refreshToken)))
-                return response.status(401).send({
-                    "statusCode": 401,
-                    "message": "Unauthorized"
+            if (!(await this.blackListRefreshTokenService.isTokenBlacklisted(refreshToken))) {
+                console.log('XXX refresh token exist', refreshToken);
+                return response.status(500).send({
+                    "statusCode": 500,
+                    "message": "Bad Request"
                 });
-
+            }
             await this.blackListRefreshTokenService.createBlacklistToken(refreshToken);
 
             return response.status(200).send(
