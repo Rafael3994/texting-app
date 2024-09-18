@@ -1,5 +1,5 @@
 import { ITokens } from "@src/service/auth.service";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 export interface ITokensContext {
     tokens: ITokens;
@@ -17,19 +17,9 @@ const initialState: ITokens = {
     refresh_token: ''
 }
 
-// Crear el proveedor del contexto
-export default function MyProvider({ children }: { children: ReactNode }) {
-    const [tokens, setTokens] = useState<ITokens>(initialState);
-
-    return (
-        <TokensContext.Provider value={{ tokens, setTokens }}>
-            {children}
-        </TokensContext.Provider>
-    );
-}
-
 export function useTokensContext() {
     const context = useContext(TokensContext)
+    const [tokens, setTokens] = useState<ITokens>(initialState);
 
     const getTokens = () => {
         return context?.tokens;
@@ -50,6 +40,8 @@ export function useTokensContext() {
     }
 
     return {
+        tokens,
+        setTokens,
         getTokens,
         hasAccessToken,
         saveTokens,

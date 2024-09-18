@@ -6,8 +6,6 @@ export default function ChatMenu() {
 
     const { chats, userLogged, handleCreateChatPopup } = useChatMenu()
 
-
-
     return (
         <div className="w-96 h-full bg-menu-chats-background">
             <div className='w-full h-full flex flex-col'>
