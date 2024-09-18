@@ -30,13 +30,16 @@ export const logIn = (credentials: IFormLogin) => {
     })
 }
 
-export const refreshAccessToken = async () => {
+export const refreshAccessToken = async (): Promise<ITokens> => {
     try {
         const response = await axiosInstance.post(
             `${MODULE_NAME_URL}/refresh`,
         );
         saveTokensInLocalStorage(response.data)
-        return response.data.access_token
+        return {
+            access_token: response.data.access_token,
+            refresh_token: response.data.refresh_token,
+        }
     } catch (error) {
         console.error('Error refreshing token', error);
         throw error;

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 html {
   height: 100%;
   width: 100%;
@@ -31,3 +30,47 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+/* POP UP */
+.swal2-title {
+  font-size: larger;
+}
+
+.swal2-input {
+  color: black;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.swal2-input:focus {
+  outline: none;
+  border: 2px solid #038069 !important;
+  box-shadow: none
+}
+
+.swal2-confirm {
+  background-color: #038069;
+  color: white;
+  font-weight: bold;
+  width: 5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.swal2-cancel {
+  background-color: #f27474;
+  color: white;
+  width: 5.5rem;
+  font-weight: bold;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.swal2-validation-message{
+  background-color: transparent;
+}
+/* //////////////// */
