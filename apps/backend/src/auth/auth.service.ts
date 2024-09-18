@@ -39,6 +39,7 @@ export class AuthService {
             return await this.genereateTokens(user);
         } catch (err) {
             this.logger.error('err refreshToken:', err)
+            return null
         }
     }
 

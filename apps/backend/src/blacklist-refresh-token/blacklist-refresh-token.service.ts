@@ -14,17 +14,16 @@ export class BlacklistRefreshTokenService {
 
     async createBlacklistToken(token: string): Promise<BlacklistRefreshTokenEntity> {
         try {
-            console.log('XXX token for create', token);
             return await this.blacklistRepository.save({ token });
         } catch (err) {
             this.logger.error('createBlacklistToken err:', err)
         }
     }
 
-    async isTokenBlacklisted(token: string): Promise<boolean> {
+    async isTokeninTheBlacklisted(token: string): Promise<boolean> {
         try {
             const tokenInBlacklist = await this.blacklistRepository.findOne({ where: { token } });
-            return !!!tokenInBlacklist;
+            return !!tokenInBlacklist;
         } catch (err) {
             this.logger.error('isTokenBlacklisted err:', err)
         }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request, Req } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Res, UseGuards, Request, Req, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDTO } from './dto/auth.dto';
 import { AuthGuard } from './auth.guard';
@@ -67,19 +67,19 @@ export class AuthController {
         try {
             const refreshToken = request.headers['x-refresh-token']
 
-            if (!(await this.blackListRefreshTokenService.isTokenBlacklisted(refreshToken))) {
-                console.log('XXX refresh token exist', refreshToken);
+            if (await this.blackListRefreshTokenService.isTokeninTheBlacklisted(refreshToken)) {
                 return response.status(500).send({
                     "statusCode": 500,
                     "message": "Bad Request"
                 });
             }
             await this.blackListRefreshTokenService.createBlacklistToken(refreshToken);
-
+            const newTokens = await this.authService.refreshToken(
+                refreshToken
+            )
+            if (!newTokens) throw new BadRequestException()
             return response.status(200).send(
-                await this.authService.refreshToken(
-                    refreshToken
-                )
+                newTokens
             );
         } catch (error) {
             this.logger.error('refreshToken', error);
