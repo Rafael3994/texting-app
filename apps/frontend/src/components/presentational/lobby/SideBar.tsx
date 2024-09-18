@@ -1,11 +1,14 @@
 import logoutSVG from '@src/assets/logout.svg'
+import useChatSelectedContext from '@src/context/chat/useChatSelectedContext'
 import { deleteTokensInLocalStorage } from '@src/service/auth.service'
 import { useNavigate } from 'react-router-dom'
 
 export default function SideBar() {
     const navigate = useNavigate()
+    const { deleteChatSelected } = useChatSelectedContext()
     const handleLogout = () => {
         deleteTokensInLocalStorage()
+        deleteChatSelected()
         navigate('/')
     }
 

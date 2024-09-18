@@ -24,8 +24,6 @@ export default function useChatSelectedContext() {
     }
 
     const deleteChatSelected = () => {
-        console.log('deleteChatSelected');
-
         context?.setChatSelected(null)
     }
 
