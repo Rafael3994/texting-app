@@ -17,6 +17,16 @@ export class TextService {
         return await this.textRepository.findOne({ where: { id } })
     }
 
+    async findAllTextByChatId(id: string): Promise<TextEntity[]> {
+        if (!id) throw new BadRequestException();
+        return await this.textRepository.find(
+            {
+                where: {
+                    chatId: id
+                }
+            })
+    }
+
     async createText(text: TextCreateDTO): Promise<TextEntity> {
         if (!text) throw new BadRequestException();
         return await this.textRepository.save(text);

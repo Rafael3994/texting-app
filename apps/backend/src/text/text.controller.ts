@@ -61,6 +61,52 @@ export class TextController {
         }
     }
 
+    @ApiOperation({
+        summary: 'Get all texts from chat.',
+        description: 'This endpoint is enabled for the user owner of the text and users with role admin.'
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns the all text.',
+        isArray: true,
+        type: TextDTO,
+    })
+    @Get('chat/:id')
+    async findAllTextByChatId(
+        @Res() response,
+        @Req() request,
+        @Param('id') id: string
+    ): Promise<any> {
+        try {
+            if (!id) {
+                return response.status(400).send('Incorrect data.');
+            }
+            // FIND THE CHAT
+            const chatEntity = await this.chatService.findChatById(id);
+
+            if (isNotFound(chatEntity)) {
+                return response.status(404).send('Not found.');
+            }
+
+            if (!isOwnOrAdmin(request.user, chatEntity.userId1) &&
+                !isOwnOrAdmin(request.user, chatEntity.userId2)) {
+                return response.status(401).send(`You don't have permission.`);
+            }
+
+            const messages = await this.textService.findAllTextByChatId(chatEntity.id)
+            if (isNotFound(messages)) {
+                return response.status(204).send([]);
+            }
+
+            return response.status(200).send(
+                messages.map((message) => TextEntity.parserTextEntityToDTO(message))
+            )
+        } catch (error) {
+            this.logger.error('findAllTextByChatId', error);
+            return response.status(500).send('Something went wrong.');
+        }
+    }
+
 
     @ApiOperation({
         summary: 'Create a text.',
