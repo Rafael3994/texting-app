@@ -2,6 +2,7 @@ import useChatSelectedContext from '@src/context/chat/useChatSelectedContext'
 import BarText from './bar-text/BarText'
 import MessageBubble from './message-bubble/MessageBubble';
 import useClipboard from './useClipboard';
+import { getUserFromToken } from '@src/service/auth.service';
 
 export default function Clipboard() {
     const { getChatSelected } = useChatSelectedContext()
@@ -40,7 +41,9 @@ export default function Clipboard() {
                                 <div className='flex flex-col p-10'>
                                     {messages.length > 0 &&
                                         messages.map((message, index) => (
-                                            <MessageBubble key={index} text={message.text} isSentByUser={message.isSentByUser} />
+                                            <MessageBubble key={index} text={message.text} isSentByUser={
+                                                getUserFromToken()?.id === message.userId ? true : false
+                                            } />
                                         ))
                                     }
                                 </div>

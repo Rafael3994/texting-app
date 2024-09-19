@@ -23,7 +23,10 @@ export class TextService {
             {
                 where: {
                     chatId: id
-                }
+                },
+                order: {
+                    createdTime: 'ASC',
+                },
             })
     }
 

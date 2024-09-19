@@ -1,15 +1,28 @@
 import { useState } from "react"
 import sendSVG from '@src/assets/send.svg'
+import { createMessage } from "@src/service/text.service"
+import useChatSelectedContext from "@src/context/chat/useChatSelectedContext"
+import { getUserFromToken } from "@src/service/auth.service"
 
 export default function BarText() {
 
     const [textValue, setTextValue] = useState<string>('')
+    const { getChatSelected } = useChatSelectedContext()
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!textValue) return
         console.log('Send:', textValue);
-        
+        const idChat = getChatSelected()
+        const idUser = getUserFromToken()?.id
+        if (!idChat || !idUser) return
+        createMessage(
+            {
+                chatId: idChat,
+                text: textValue,
+                userId: idUser
+            }
+        )
         setTextValue('')
     }
 
