@@ -12,7 +12,6 @@ export default function BarText() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!textValue) return
-        console.log('Send:', textValue);
         const idChat = getChatSelected()
         const idUser = getUserFromToken()?.id
         if (!idChat || !idUser) return

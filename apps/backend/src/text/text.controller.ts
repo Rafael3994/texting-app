@@ -81,7 +81,7 @@ export class TextController {
             if (!id) {
                 return response.status(400).send('Incorrect data.');
             }
-            // FIND THE CHAT
+
             const chatEntity = await this.chatService.findChatById(id);
 
             if (isNotFound(chatEntity)) {
@@ -222,9 +222,11 @@ export class TextController {
             }
 
             const foundChat = await this.chatService.findChatById(foundText.chatId);
+
             if (!isOwnOrAdmin(request.user, foundChat.userId1) && !isOwnOrAdmin(request.user, foundChat.userId2)) {
                 return response.status(401).send(`You don't have permission.`);
             }
+            if (request.user.id !== foundText.userId) return response.status(401).send(`You don't have permission.`);
 
             const deleteResult = await this.textService.deleteText(id);
             if (deleteResult > 0) {

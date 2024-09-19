@@ -41,7 +41,7 @@ export default function Clipboard() {
                                 <div className='flex flex-col p-10'>
                                     {messages.length > 0 &&
                                         messages.map((message, index) => (
-                                            <MessageBubble key={index} text={message.text} isSentByUser={
+                                            <MessageBubble key={index} message={message} isSentByUser={
                                                 getUserFromToken()?.id === message.userId ? true : false
                                             } />
                                         ))

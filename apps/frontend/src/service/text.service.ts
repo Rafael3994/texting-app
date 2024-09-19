@@ -25,3 +25,13 @@ export const createMessage = async (newMessage: TextCreateDTO) => {
 
     }
 }
+
+export const deleteMessage = async (idMessage: string) => {
+    try {
+        return await axiosInstance.delete(
+            `${MODULE_NAME_URL}/${idMessage}`,
+        )
+    } catch (err) {
+        console.log('deleteMessage err:', err);
+    }
+}
