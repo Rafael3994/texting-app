@@ -1,42 +1,53 @@
-import sendSVG from '@src/assets/send.svg'
 import useChatSelectedContext from '@src/context/chat/useChatSelectedContext'
-import { useState } from 'react'
+import BarText from './bar-text/BarText'
+import MessageBubble from './message-bubble/MessageBubble';
 
 export default function Clipboard() {
     const { getChatSelected } = useChatSelectedContext()
-    const [textValue, setTextValue] = useState<string>('')
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        if (!textValue) return
-        setTextValue('')
-    }
+
+    const dummyConversation = [
+        { text: "Hola, ¿cómo estás?", isSentByUser: false },
+        { text: "¡Hola! Estoy bien, gracias. ¿Y tú?", isSentByUser: true },
+        { text: "También estoy bien. ¿Qué planes tienes para hoy?", isSentByUser: false },
+        { text: "Pensaba salir a correr un rato. ¿Y tú?", isSentByUser: true },
+        { text: "Yo tengo que hacer algunas compras. Luego, si quieres, podemos quedar.", isSentByUser: false },
+        { text: "¡Perfecto! Me avisas cuando estés libre.", isSentByUser: true },
+        { text: "Claro, te llamo más tarde.", isSentByUser: false },
+        { text: "De acuerdo, ¡nos vemos luego!", isSentByUser: true },
+        { text: "Hasta luego!", isSentByUser: false },
+        { text: "Hola, ¿cómo estás?", isSentByUser: false },
+        { text: "¡Hola! Estoy bien, gracias. ¿Y tú?", isSentByUser: true },
+        { text: "También estoy bien. ¿Qué planes tienes para hoy?", isSentByUser: false },
+        { text: "Pensaba salir a correr un rato. ¿Y tú?", isSentByUser: true },
+        { text: "Yo tengo que hacer algunas compras. Luego, si quieres, podemos quedar.", isSentByUser: false },
+        { text: "¡Perfecto! Me avisas cuando estés libre.", isSentByUser: true },
+        { text: "Claro, te llamo más tarde.", isSentByUser: false },
+        { text: "De acuerdo, ¡nos vemos luego!", isSentByUser: true },
+        { text: "Hasta luego!", isSentByUser: false },
+    ];
 
     return (
         <div className="flex-grow h-full bg-clipboard-background">
-            {
-                getChatSelected() &&
-                <div className="flex flex-col h-full w-full">
-                    <div className="flex-grow"></div>
-                    <div className="bg-color-sidebar h-20 w-full">
-                        <form onSubmit={handleSubmit} className="h-full w-full flex flex-row items-center justify-center">
-                            <input
-                                type="text"
-                                value={textValue}
-                                onChange={(e) => {
-                                    setTextValue(e.target.value)
-                                }}
-                                className="h-10 w-4/6 py-2 rounded-xl bg-item-menu-selected border-[1px] border-clipboard-background
-                                px-4 focus:outline-none focus:ring-[1px] focus:ring-dark-green focus:border-dark-green-hover transition duration-200 ease-in-out
-                                "
-                            />
-                            <div className='h-12 w-12 ml-7 hover:cursor-pointer hover:bg-menu-chats-background hover:border hover:border-[#ffffff53] hover:shadow-white hover:rounded-full'>
-                                <button className='h-full w-full flex justify-center items-center pl-1'>
-                                    <img src={sendSVG} alt="send-message" className='h-12 w-12' />
-                                </button>
+            <div className='w-full h-full flex flex-col'>
+                {getChatSelected() && (
+                    <div className='h-full w-full'>
+                        <div className="flex flex-col h-full w-full">
+                            <div className="flex-grow overflow-hidden overflow-y-scroll flex flex-col-reverse">
+                                <div className='flex flex-col p-10'>
+                                    {dummyConversation.length > 0 &&
+                                        dummyConversation.map((message, index) => (
+                                            <MessageBubble key={index} text={message.text} isSentByUser={message.isSentByUser} />
+                                        ))
+                                    }
+                                </div>
                             </div>
-                        </form>
+                            <BarText />
+                        </div>
                     </div>
-                </div>}
+                )}
+            </div>
         </div>
+
+
     )
 }

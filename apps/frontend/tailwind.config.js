@@ -9,6 +9,7 @@ export default {
         "main-green": '#03a884',
         "dark-green": '#038069',
         "dark-green-hover": "#027562",
+        "green-message-bubble": "#DCF8C6",
         "white-font": '#fdfefe',
         "main-background": '#e4e3de',
         "color-sidebar": '#202b33',

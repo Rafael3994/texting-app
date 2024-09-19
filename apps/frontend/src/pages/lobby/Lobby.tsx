@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom'
 export default function LobbyPage() {
     return (
         isTokensInLocalStorage() ? (
-            <div className='h-full w-full' >
+            <div className='h-full w-full overflow-hidden'>
                 <div className="h-full w-full flex flex-row">
                     <SideBar />
                     <ChatMenu />
