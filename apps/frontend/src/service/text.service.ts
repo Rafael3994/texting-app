@@ -1,4 +1,4 @@
-import { TextCreateDTO } from "@src/dtos/text.create.dto";
+import { TextCreateDTO } from "@src/dtos/Text.create.dto";
 import { axiosInstance } from "./service.config";
 
 const MODULE_NAME_URL: string = `text`
