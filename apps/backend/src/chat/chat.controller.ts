@@ -13,7 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@ne
 import { ChatCreateDTO } from './dto/chat.create.dto';
 import { isOwn } from '@src/utils/isOwn';
 import { UserRoles } from '@src/user/entity/user.entity';
-import { WebSocketsGateway } from './webSockets.gateway';
+import { WebSocketsGateway } from '../web-sockets/webSockets.gateway';
 
 @ApiBearerAuth()
 @ApiTags('CHAT')

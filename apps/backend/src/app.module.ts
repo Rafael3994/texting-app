@@ -15,6 +15,7 @@ import { BlacklistRefreshTokenModule } from './blacklist-refresh-token/blacklist
 import { BlacklistRefreshTokenEntity } from './blacklist-refresh-token/entity/blacklist-refresh-token.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { WebSocketsModule } from './web-sockets/web-sockets.module';
 
 require('dotenv').config();
 
@@ -37,6 +38,7 @@ const env = {
     ChatModule,
     TextModule,
     AuthModule,
+    WebSocketsModule,
     BlacklistRefreshTokenModule,
     ScheduleModule,
     ServeStaticModule.forRoot({

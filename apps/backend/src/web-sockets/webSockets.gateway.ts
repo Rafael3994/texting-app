@@ -6,7 +6,7 @@ import {
     OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatDTO } from './dto/chat.dto';
+import { ChatDTO } from '../chat/dto/chat.dto';
 
 @WebSocketGateway({
     cors: {

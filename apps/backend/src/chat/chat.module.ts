@@ -5,7 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity';
 import { UserModule } from '@src/user/user.module';
 import { TextModule } from '@src/text/text.module';
-import { WebSocketsGateway } from './webSockets.gateway';
+import { WebSocketsModule } from '@src/web-sockets/web-sockets.module';
+import { WebSocketsGateway } from '@src/web-sockets/webSockets.gateway';
 
 @Module({
   imports: [
