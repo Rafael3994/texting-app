@@ -26,8 +26,9 @@ export default function useItemChatMenu(infoChat: ChatDTO) {
     }, [getPersonToTalk])
 
     const MySwal = withReactContent(Swal);
-    const handleDeleteChatPopup = async (idChat: string) => {
+    const handleDeleteChatPopup = async (e: React.MouseEvent<HTMLDivElement>, idChat: string) => {
         try {
+            e.stopPropagation()
             await MySwal.fire({
                 title: "Do you are sure you want to delete the chat?",
                 heightAuto: false,
@@ -41,6 +42,7 @@ export default function useItemChatMenu(infoChat: ChatDTO) {
                         if (!deletedChat) {
                             return Swal.showValidationMessage(`The chat couldn't be deleted.`);
                         }
+
                         await MySwal.fire({
                             title: `Chat deleted`,
                             heightAuto: false,
@@ -61,3 +63,4 @@ export default function useItemChatMenu(infoChat: ChatDTO) {
         handleDeleteChatPopup,
     }
 }
+

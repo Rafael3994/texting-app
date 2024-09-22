@@ -30,7 +30,7 @@ export function ItemChatMenu({ infoChat }: { infoChat: ChatDTO }) {
                 <Avatar name={personToTalk.name} size="45" textSizeRatio={2.7} className='rounded-full' />
                 <p className='ml-8'>{personToTalk.name}</p>
                 <div className="h-full w-full flex flex-row-reverse items-center">
-                    <div onClick={() => handleDeleteChatPopup(infoChat.id)} className="h-10 w-10 flex justify-center items-center hover:cursor-pointer hover:bg-menu-chats-background hover:border hover:border-[#ffffff53] hover:shadow-white hover:rounded-full">
+                    <div onClick={(e: React.MouseEvent<HTMLDivElement>) => handleDeleteChatPopup(e, infoChat.id)} className="h-10 w-10 flex justify-center items-center hover:cursor-pointer hover:bg-menu-chats-background hover:border hover:border-[#ffffff53] hover:shadow-white hover:rounded-full">
                         <img src={deleteSVG} alt="delete" className='h-7 w-7' />
                     </div>
                 </div>

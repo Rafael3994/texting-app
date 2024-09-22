@@ -1,9 +1,10 @@
+import useChatSelectedContext from '@src/context/chat/useChatSelectedContext';
 import { ChatCreateDTO } from '@src/dtos/Chat.create.dto';
 import { ChatDTO } from '@src/dtos/Chat.dto';
 import { UserDTO } from '@src/dtos/User.dto';
 import { getUserFromToken } from '@src/service/auth.service';
 import { createChat, getChatsFromUser } from '@src/service/chat.service';
-import { getSocketConnection } from '@src/service/webSocket';
+import { EVENTS_NAMES, getSocketConnection } from '@src/service/webSocket';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -12,6 +13,7 @@ export default function useChatMenu() {
 
     const [chats, setChats] = useState<ChatDTO[]>([])
     const [userLogged, setUserLogged] = useState<UserDTO | null>(getUserFromToken())
+    const { getChatSelected, deleteChatSelected } = useChatSelectedContext()
 
     useEffect(() => {
         getChatsFromUser()
@@ -24,8 +26,14 @@ export default function useChatMenu() {
                 console.log('getChatsFromUser err:', err);
             });
 
-        getSocketConnection()?.on('chatCreated', (chatWS: ChatDTO) => {
+        getSocketConnection()?.on(EVENTS_NAMES.CHAT_CREATED, (chatWS: ChatDTO) => {
+            console.log(EVENTS_NAMES.CHAT_CREATED, chatWS);
             setChats(prevChats => [...prevChats, chatWS]);
+        });
+        getSocketConnection()?.on(EVENTS_NAMES.CHAT_DELETED, (chatWS: ChatDTO) => {
+            console.log(EVENTS_NAMES.CHAT_DELETED, chatWS);
+            if (getChatSelected() === chatWS.id) deleteChatSelected()
+            setChats(prevChats => prevChats.filter(chat => chat.id !== chatWS.id));
         });
     }, []);
 

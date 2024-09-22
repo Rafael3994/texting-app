@@ -233,14 +233,13 @@ export class ChatController {
                 });
             }
 
-            // Eliminar los textos asociados al chat
             for (const text of foundChat.texts) {
                 await this.textService.deleteText(text.id);
             }
 
-            // Eliminar el chat
             const deleteResult = await this.chatService.deleteChat(id);
             if (deleteResult > 0) {
+                this.webSocketsGateway.handleDeleteChat(foundChat)
                 return response.status(200).send(
                     ChatEntity.parserChatEntityToDTO(foundChat)
                 );
@@ -253,3 +252,4 @@ export class ChatController {
         }
     }
 }
+
