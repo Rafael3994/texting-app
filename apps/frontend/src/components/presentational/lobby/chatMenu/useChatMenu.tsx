@@ -3,6 +3,7 @@ import { ChatDTO } from '@src/dtos/Chat.dto';
 import { UserDTO } from '@src/dtos/User.dto';
 import { getUserFromToken } from '@src/service/auth.service';
 import { createChat, getChatsFromUser } from '@src/service/chat.service';
+import { getSocketConnection } from '@src/service/webSocket';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -15,13 +16,18 @@ export default function useChatMenu() {
     useEffect(() => {
         getChatsFromUser()
             .then(res => {
-                if (!res?.data) return
-                setChats(res?.data)
+                if (res?.data) {
+                    setChats(res.data);
+                }
             })
             .catch(err => {
                 console.log('getChatsFromUser err:', err);
-            })
-    }, [])
+            });
+
+        getSocketConnection()?.on('chatCreated', (chatWS: ChatDTO) => {
+            setChats(prevChats => [...prevChats, chatWS]);
+        });
+    }, []);
 
     const MySwal = withReactContent(Swal);
     const handleCreateChatPopup = async () => {

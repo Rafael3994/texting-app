@@ -13,6 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, PickType } from '@ne
 import { ChatCreateDTO } from './dto/chat.create.dto';
 import { isOwn } from '@src/utils/isOwn';
 import { UserRoles } from '@src/user/entity/user.entity';
+import { WebSocketsGateway } from './webSockets.gateway';
 
 @ApiBearerAuth()
 @ApiTags('CHAT')
@@ -23,6 +24,7 @@ export class ChatController {
         private userService: UserService,
         private textService: TextService,
         private logger: Logger,
+        private webSocketsGateway: WebSocketsGateway
     ) { }
 
     @ApiOperation({
@@ -137,9 +139,12 @@ export class ChatController {
             }
 
             const createdChat = await this.chatService.createChat(chat);
+            const findNewChat = await this.chatService.findChatById(createdChat.id, ['user1', 'user2'])
+            const createdChatDto = ChatEntity.parserChatEntityToDTO(findNewChat)
+            this.webSocketsGateway.handleCreateChat(findNewChat)
             return response
                 .status(201)
-                .send(ChatEntity.parserChatEntityToDTO(createdChat));
+                .send(createdChatDto);
 
         } catch (err) {
             this.logger.error('createChat', err);

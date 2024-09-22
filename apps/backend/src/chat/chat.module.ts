@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity';
 import { UserModule } from '@src/user/user.module';
 import { TextModule } from '@src/text/text.module';
+import { WebSocketsGateway } from './webSockets.gateway';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TextModule } from '@src/text/text.module';
   providers: [
     ChatService,
     Logger,
+    WebSocketsGateway,
   ],
   exports: [ChatService, ChatModule],
 })

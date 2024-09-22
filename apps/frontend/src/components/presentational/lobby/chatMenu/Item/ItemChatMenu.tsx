@@ -3,7 +3,6 @@ import useItemChatMenu from "./useItemChatMenu"
 import { ChatDTO } from "@src/dtos/Chat.dto"
 import deleteSVG from '@src/assets/delete.svg'
 import useChatSelectedContext from "@src/context/chat/useChatSelectedContext"
-import { useEffect } from "react"
 
 export function ItemChatMenu({ infoChat }: { infoChat: ChatDTO }) {
 
@@ -16,7 +15,6 @@ export function ItemChatMenu({ infoChat }: { infoChat: ChatDTO }) {
         return saveChatSelected(infoChat.id)
     }
 
-    useEffect(() => { }, [getChatSelected])
 
     return (
         personToTalk &&
