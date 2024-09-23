@@ -54,5 +54,10 @@ export class WebSocketsGateway implements OnGatewayConnection, OnGatewayDisconne
         this.server.to(`user_${userId2}`).emit(EVENTS_NAMES.MESSAGE_CREATED, messagesData);
     }
 
-    // TODO: DELETE MESSAGE
+    @SubscribeMessage(EVENTS_NAMES.MESSAGE_DELETED)
+    handleDeleteMessage(chatData: ChatEntity, messagesData: TextPublicDTO): void {
+        const { userId1, userId2 } = chatData;
+        this.server.to(`user_${userId1}`).emit(EVENTS_NAMES.MESSAGE_DELETED, messagesData);
+        this.server.to(`user_${userId2}`).emit(EVENTS_NAMES.MESSAGE_DELETED, messagesData);
+    }
 }

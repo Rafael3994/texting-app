@@ -234,7 +234,9 @@ export class TextController {
 
             const deleteResult = await this.textService.deleteText(id);
             if (deleteResult > 0) {
-                return response.status(200).send(TextEntity.parserTextPublicEntityToDTO(foundText));
+                const newText = TextEntity.parserTextPublicEntityToDTO(foundText)
+                this.webSocketsGateway.handleDeleteMessage(foundChat, newText)
+                return response.status(200).send(newText);
             } else {
                 return response.status(404).send('Not Deleted.');
             }

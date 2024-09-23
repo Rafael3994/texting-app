@@ -16,8 +16,11 @@ export default function useClipboard({ chatId }: { chatId: string | null | undef
             })
 
         getSocketConnection()?.on(EVENTS_NAMES.MESSAGE_CREATED, (messageWS: TextPublicDTO) => {
-            console.log('messageWS', messageWS);
             setMessages(prevChats => [...prevChats, messageWS]);
+        });
+
+        getSocketConnection()?.on(EVENTS_NAMES.MESSAGE_DELETED, (messageWS: TextPublicDTO) => {
+            setMessages(prevMessages => prevMessages.filter((message) => message.id !== messageWS.id));
         });
 
         return () => {
