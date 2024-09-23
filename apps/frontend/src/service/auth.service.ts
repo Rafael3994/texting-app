@@ -41,10 +41,7 @@ export const refreshAccessToken = async (): Promise<ITokens> => {
             refresh_token: response.data.refresh_token,
         }
     } catch (error) {
-        console.error('Error refreshing token', error);
         console.log('Error refreshing token', error);
-        // deleteTokensInLocalStorage()
-        // window.location.href = '/login'
         throw error;
     }
 }

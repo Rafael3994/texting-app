@@ -7,27 +7,6 @@ import { getUserFromToken } from '@src/service/auth.service';
 export default function Clipboard() {
     const { getChatSelected } = useChatSelectedContext()
 
-    // const dummyConversation = [
-    //     { text: "Hola, ¿cómo estás?", isSentByUser: false },
-    //     { text: "¡Hola! Estoy bien, gracias. ¿Y tú?", isSentByUser: true },
-    //     { text: "También estoy bien. ¿Qué planes tienes para hoy?", isSentByUser: false },
-    //     { text: "Pensaba salir a correr un rato. ¿Y tú?", isSentByUser: true },
-    //     { text: "Yo tengo que hacer algunas compras. Luego, si quieres, podemos quedar.", isSentByUser: false },
-    //     { text: "¡Perfecto! Me avisas cuando estés libre.", isSentByUser: true },
-    //     { text: "Claro, te llamo más tarde.", isSentByUser: false },
-    //     { text: "De acuerdo, ¡nos vemos luego!", isSentByUser: true },
-    //     { text: "Hasta luego!", isSentByUser: false },
-    //     { text: "Hola, ¿cómo estás?", isSentByUser: false },
-    //     { text: "¡Hola! Estoy bien, gracias. ¿Y tú?", isSentByUser: true },
-    //     { text: "También estoy bien. ¿Qué planes tienes para hoy?", isSentByUser: false },
-    //     { text: "Pensaba salir a correr un rato. ¿Y tú?", isSentByUser: true },
-    //     { text: "Yo tengo que hacer algunas compras. Luego, si quieres, podemos quedar.", isSentByUser: false },
-    //     { text: "¡Perfecto! Me avisas cuando estés libre.", isSentByUser: true },
-    //     { text: "Claro, te llamo más tarde.", isSentByUser: false },
-    //     { text: "De acuerdo, ¡nos vemos luego!", isSentByUser: true },
-    //     { text: "Hasta luego!", isSentByUser: false },
-    // ];
-
     const { messages } = useClipboard({ chatId: getChatSelected() })
 
     return (

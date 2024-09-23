@@ -25,17 +25,24 @@ export default function useChatMenu() {
             .catch(err => {
                 console.log('getChatsFromUser err:', err);
             });
+    }, []);
 
+    useEffect(() => {
         getSocketConnection()?.on(EVENTS_NAMES.CHAT_CREATED, (chatWS: ChatDTO) => {
-            console.log(EVENTS_NAMES.CHAT_CREATED, chatWS);
             setChats(prevChats => [...prevChats, chatWS]);
         });
         getSocketConnection()?.on(EVENTS_NAMES.CHAT_DELETED, (chatWS: ChatDTO) => {
-            console.log(EVENTS_NAMES.CHAT_DELETED, chatWS);
-            if (getChatSelected() === chatWS.id) deleteChatSelected()
+            if (getChatSelected() === chatWS.id) {
+                deleteChatSelected()
+            }
             setChats(prevChats => prevChats.filter(chat => chat.id !== chatWS.id));
         });
-    }, []);
+
+        return () => {
+            getSocketConnection()?.off(EVENTS_NAMES.CHAT_CREATED);
+            getSocketConnection()?.off(EVENTS_NAMES.CHAT_DELETED);
+        }
+    }, [getChatSelected])
 
     const MySwal = withReactContent(Swal);
     const handleCreateChatPopup = async () => {

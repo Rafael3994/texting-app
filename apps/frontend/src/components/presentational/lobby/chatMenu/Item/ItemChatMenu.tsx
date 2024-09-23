@@ -11,10 +11,11 @@ export function ItemChatMenu({ infoChat }: { infoChat: ChatDTO }) {
 
     const handleClickChat = () => {
         const chatSelected = getChatSelected()
-        if (chatSelected === infoChat.id) return deleteChatSelected()
+        if (chatSelected === infoChat.id) {
+            return deleteChatSelected()
+        }
         return saveChatSelected(infoChat.id)
     }
-
 
     return (
         personToTalk &&

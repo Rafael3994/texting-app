@@ -23,7 +23,6 @@ export class WebSocketsGateway implements OnGatewayConnection, OnGatewayDisconne
 
     handleConnection(client: Socket) {
         client.join(`user_${client.handshake.auth.userId}`);
-        console.log(`${client.handshake.auth.userId}`);
     }
 
     handleDisconnect(client: Socket) { }
