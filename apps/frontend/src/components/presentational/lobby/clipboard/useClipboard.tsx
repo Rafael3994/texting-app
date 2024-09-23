@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 
 export default function useClipboard({ chatId }: { chatId: string | null | undefined }) {
     const [messages, setMessages] = useState<TextPublicDTO[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
         if (!chatId) return
@@ -14,6 +15,9 @@ export default function useClipboard({ chatId }: { chatId: string | null | undef
             }).catch(err => {
                 console.log('err', err);
             })
+            .finally(() =>
+                setIsLoading(false)
+            );
 
         getSocketConnection()?.on(EVENTS_NAMES.MESSAGE_CREATED, (messageWS: TextPublicDTO) => {
             setMessages(prevChats => [...prevChats, messageWS]);
@@ -25,10 +29,12 @@ export default function useClipboard({ chatId }: { chatId: string | null | undef
 
         return () => {
             getSocketConnection()?.off(EVENTS_NAMES.MESSAGE_CREATED)
+            setMessages([])
         }
     }, [chatId])
 
     return {
-        messages
+        messages,
+        isLoading
     }
 }

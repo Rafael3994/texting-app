@@ -13,6 +13,7 @@ export default function useChatMenu() {
 
     const [chats, setChats] = useState<ChatDTO[]>([])
     const [userLogged, setUserLogged] = useState<UserDTO | null>(getUserFromToken())
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { getChatSelected, deleteChatSelected } = useChatSelectedContext()
 
     useEffect(() => {
@@ -24,7 +25,10 @@ export default function useChatMenu() {
             })
             .catch(err => {
                 console.log('getChatsFromUser err:', err);
-            });
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
     }, []);
 
     useEffect(() => {
@@ -91,6 +95,7 @@ export default function useChatMenu() {
     return {
         chats,
         userLogged,
+        isLoading,
         handleCreateChatPopup,
     }
 }
