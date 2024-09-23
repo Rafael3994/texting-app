@@ -12,6 +12,7 @@ import { isOwn } from '@src/utils/isOwn';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TextPublicDTO } from './dto/text.public.dto';
 import { TextCreateDTO } from './dto/text.create.dto';
+import { WebSocketsGateway } from '@src/web-sockets/webSockets.gateway';
 
 @ApiBearerAuth()
 @ApiTags('TEXT')
@@ -21,7 +22,8 @@ export class TextController {
         private textService: TextService,
         private userService: UserService,
         private chatService: ChatService,
-        private logger: Logger
+        private logger: Logger,
+        private webSocketsGateway: WebSocketsGateway,
     ) { }
 
     @ApiOperation({
@@ -141,7 +143,9 @@ export class TextController {
             }
 
             const createdText = await this.textService.createText(text);
-            return response.status(201).send(TextEntity.parserTextPublicEntityToDTO(createdText));
+            const newMessage = TextEntity.parserTextPublicEntityToDTO(createdText)
+            this.webSocketsGateway.handleCreateMessage(foundChat, newMessage)
+            return response.status(201).send(newMessage);
 
         } catch (err) {
             this.logger.error('createText', err);

@@ -4,7 +4,9 @@ import { BACKEND_URL } from "./service.config";
 
 export const EVENTS_NAMES = {
     CHAT_CREATED: 'chatCreated',
-    CHAT_DELETED: 'chatDeleted'
+    CHAT_DELETED: 'chatDeleted',
+    MESSAGE_CREATED: 'messageCreated',
+    MESSAGE_DELETED: 'messageDeleted',
 }
 
 let socket: Socket | null = null

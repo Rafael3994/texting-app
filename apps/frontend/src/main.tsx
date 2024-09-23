@@ -17,7 +17,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <LoginPage />,
   },
-  // TODO: CREATE A NEW USER PAGE
   {
     path: 'lobby',
     element: <LobbyPage />
@@ -26,7 +25,6 @@ const router = createBrowserRouter([
     path: '*',
     element: <Navigate to="/" />
   }
-  // TODO: ¿¿ ADMIN PAGE ???
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
