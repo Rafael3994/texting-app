@@ -27,7 +27,7 @@ export function ItemChatMenu({ infoChat }: { infoChat: ChatDTO }) {
                     'relative w-full h-20 hover:bg-item-menu-selected hover:cursor-pointer'
             }
         >
-            <div className='h-full w-full flex items-center justify-around'>
+            <div className='h-full w-full flex items-center justify-around px-4 md:px-2'>
                 <div className="h-full w-3/4 flex flex-row  items-center ml-2">
                     <Avatar name={personToTalk.name} size="45" textSizeRatio={2.7} className='rounded-full' />
                     <p className="max-h-full overflow-hidden ml-3">{personToTalk.name} AAAA</p>

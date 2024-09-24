@@ -26,7 +26,7 @@ export default function BarText() {
     }
 
     return (
-        <div className="bg-color-sidebar h-20 w-full">
+        <div className="bg-color-sidebar h-20 w-full fixed bottom-0 md:static md:block">
             <form onSubmit={handleSubmit} className="h-full w-full flex flex-row items-center justify-center">
                 <input
                     type="text"
