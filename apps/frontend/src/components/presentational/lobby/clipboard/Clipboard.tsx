@@ -11,7 +11,7 @@ export default function Clipboard() {
     const { messages, isLoading } = useClipboard({ chatId: getChatSelected() })
 
     return (
-        <div className="flex-grow h-full bg-clipboard-background">
+        <div className="w-8/12 h-full bg-clipboard-background">
             <div className='w-full h-full flex flex-col'>
                 {getChatSelected() && (
                     <div className='h-full w-full'>

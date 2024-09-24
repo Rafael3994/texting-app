@@ -8,22 +8,18 @@ export default function ChatMenu() {
     const { chats, userLogged, isLoading, handleCreateChatPopup } = useChatMenu()
 
     return (
-        <div className="w-96 h-full bg-menu-chats-background">
+        <div className="w-3/12 h-full bg-menu-chats-background">
             <div className='w-full h-full flex flex-col'>
 
-                <div className="w-full h-16 px-12 pt-5 mb-3">
-                    <div className="w-full h-full flex flex-col justify-between">
+                <div className="w-full h-16 px-3 pt-5 mb-5 flex flex-col items-center">
                         <h3 className='font-semibold text-lg'>{userLogged?.email}</h3>
-                        <p className='text-sm'>
+                        <p className='text-sm lg:w-full md:w-40 min-h-12 text-center'>
                             {userLogged?.id}
                         </p>
-
-                    </div>
                 </div>
 
-
-                <div className="w-full h-16 px-12 pt-5 mb-3">
-                    <div className="w-full h-full flex flex-row items-center justify-between">
+                <div className="w-full h-16 pt-5 mb-3">
+                    <div className="w-full h-full flex flex-row items-center justify-around">
                         <h3 className='font-semibold text-xl'>Chats</h3>
                         <div
                             onClick={handleCreateChatPopup}

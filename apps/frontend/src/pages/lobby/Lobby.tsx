@@ -14,7 +14,7 @@ export default function LobbyPage() {
 
     return (
         isTokensInLocalStorage() ? (
-            <div className='h-full w-full overflow-hidden'>
+            <div className='hidden md:block h-full w-full overflow-hidden'>
                 <div className="h-full w-full flex flex-row">
                     <SideBar />
                     <ChatMenu />
