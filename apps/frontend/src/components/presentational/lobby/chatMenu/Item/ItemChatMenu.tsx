@@ -30,7 +30,7 @@ export function ItemChatMenu({ infoChat }: { infoChat: ChatDTO }) {
             <div className='h-full w-full flex items-center justify-around px-4 md:px-2'>
                 <div className="h-full w-3/4 flex flex-row  items-center ml-2">
                     <Avatar name={personToTalk.name} size="45" textSizeRatio={2.7} className='rounded-full' />
-                    <p className="max-h-full overflow-hidden ml-3">{personToTalk.name} AAAA</p>
+                    <p className="max-h-full overflow-hidden ml-3">{personToTalk.name}</p>
                 </div>
                 <div className="h-full w-1/4 flex flex-row-reverse items-center">
                     <div onClick={(e: React.MouseEvent<HTMLDivElement>) => handleDeleteChatPopup(e, infoChat.id)} className="h-10 w-10 flex justify-center items-center hover:cursor-pointer hover:bg-menu-chats-background hover:border hover:border-[#ffffff53] hover:shadow-white hover:rounded-full">
