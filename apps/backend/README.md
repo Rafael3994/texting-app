@@ -1,5 +1,5 @@
 # Backend Texting-App
-This is the project is the backend of texting-app. Here, we explain all you need for use the backend.
+This is the backend of texting-app. Here, we explain all you need to use the backend.
 
 - [Backend Texting-App](#backend-texting-app)
     - [Installation 🚀](#installation-)
@@ -11,9 +11,9 @@ This is the project is the backend of texting-app. Here, we explain all you need
 
 ### Installation 🚀
 
-You need use data base, I used a container docker with mysql. (I recommened it)
-In the file Database_structure.sql, there are the structure of the data base.
-With this you have all of necessary to create the data base.
+You need to use database, I used a container docker with mysql. (I recommend it)
+In the file Database_structure.sql, there is the structure of the data base.
+With this, you have all of necessary to create the database.
 
 
 Clon the repository
@@ -65,6 +65,7 @@ On the modules *user*, *chat* and *text*, I have the unit test for the controlle
 * [Typeorm](https://typeorm.io/) - ORM
 * [Jest](https://jestjs.io/) - Testing Framework
 * [Mysql](https://www.mysql.com) - Data base
+* [Socket.io](https://socket.io/) - WebSocket
 
 ### Author 👑
 Rafael Garcia Perez
