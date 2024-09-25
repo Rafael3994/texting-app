@@ -7,6 +7,8 @@ export default function useClipboard({ chatId }: { chatId: string | null | undef
     const [messages, setMessages] = useState<TextPublicDTO[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    useEffect(() => { }, [messages])
+
     useEffect(() => {
         if (!chatId) return
         getMessagesFromIdChat(chatId)
@@ -28,7 +30,6 @@ export default function useClipboard({ chatId }: { chatId: string | null | undef
         });
 
         return () => {
-            getSocketConnection()?.off(EVENTS_NAMES.MESSAGE_CREATED)
             setMessages([])
         }
     }, [chatId])
