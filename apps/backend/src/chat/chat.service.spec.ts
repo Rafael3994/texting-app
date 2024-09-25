@@ -6,6 +6,7 @@ import { ChatEntity } from './entity/chat.entity';
 import { ChatCreateDTO } from './dto/chat.create.dto';
 import { mockChatEntity } from './chat.controller.spec';
 import { mockRepository, TypeMockRepository } from '@src/user/user.service.spec';
+import { WebSocketsGateway } from '@src/web-sockets/webSockets.gateway';
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -18,6 +19,7 @@ describe('ChatService', () => {
       providers: [
         ChatService,
         Logger,
+        WebSocketsGateway,
         {
           provide:
             getRepositoryToken(ChatEntity),

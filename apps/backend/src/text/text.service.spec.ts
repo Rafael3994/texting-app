@@ -5,6 +5,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
 import { TextEntity } from './entity/text.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { mockTextCreateDTO, mockTextDTO, mockTextEntity } from './text.controller.spec';
+import { WebSocketsGateway } from '@src/web-sockets/webSockets.gateway';
 
 describe('TextService', () => {
   let textService: TextService;
@@ -12,11 +13,11 @@ describe('TextService', () => {
   const mockTextId = mockTextEntity[0].id;
 
   beforeEach(async () => {
-    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TextService,
         Logger,
+        WebSocketsGateway,
         {
           provide:
             getRepositoryToken(TextEntity),

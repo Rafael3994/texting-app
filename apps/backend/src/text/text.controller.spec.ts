@@ -10,6 +10,7 @@ import { mockedUsersDTO, mockedUsersEntity, mockedUsersPublicDTO, mockRequest, m
 import { TextDTO } from './dto/text.dto';
 import { isOwnOrAdmin } from '@src/utils/isOwnOrAdmin';
 import { TextCreateDTO } from './dto/text.create.dto';
+import { WebSocketsGateway } from '@src/web-sockets/webSockets.gateway';
 
 export const mockTextEntity: TextEntity[] = [
   {
@@ -85,6 +86,7 @@ describe('TextController', () => {
           useValue: mockChatService,
         },
         Logger,
+        WebSocketsGateway,
       ],
     })
       .compile();
@@ -175,7 +177,7 @@ describe('TextController', () => {
       await textController.createText(mockResponse, mockRequest, mockTextCreateDTO);
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.send).toHaveBeenCalledWith(TextEntity.parserTextPublicEntityToDTO(mockTextEntity[0]));
+      expect(mockResponse.send).toHaveBeenCalledWith(TextEntity.parserTextEntityToDTO(mockTextEntity[0]));
     });
 
     it('should return 500 if an error occurs', async () => {

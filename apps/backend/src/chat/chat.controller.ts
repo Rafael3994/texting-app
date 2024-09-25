@@ -141,6 +141,7 @@ export class ChatController {
             const createdChat = await this.chatService.createChat(chat);
             const findNewChat = await this.chatService.findChatById(createdChat.id, ['user1', 'user2'])
             const createdChatDto = ChatEntity.parserChatEntityToDTO(findNewChat)
+
             this.webSocketsGateway.handleCreateChat(findNewChat)
             return response
                 .status(201)

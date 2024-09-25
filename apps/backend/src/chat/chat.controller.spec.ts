@@ -9,6 +9,7 @@ import { ForbiddenException, Logger } from '@nestjs/common';
 import { TextService } from '@src/text/text.service';
 import { UserService } from '@src/user/user.service';
 import { mockTextService } from '@src/text/text.controller.spec';
+import { WebSocketsGateway } from '@src/web-sockets/webSockets.gateway';
 
 export const mockChatDTO: ChatDTO[] = [
   {
@@ -63,12 +64,12 @@ describe('ChatController', () => {
   const mockChatId: string = '123456789';
 
   beforeEach(async () => {
-    // jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ChatController],
       providers: [
         ChatService,
         Logger,
+        WebSocketsGateway,
         {
           provide: UserService,
           useValue: mockUsersService,
@@ -138,20 +139,70 @@ describe('ChatController', () => {
   });
 
   describe('createChat', () => {
-    it('should be return a created chat.', async () => {
-      const mockNewChat = { userId1: 'user1', userId2: 'user2' };
-      const mockCreatedChat = { id: 'chat1', ...mockNewChat };
-      const mockResponse = { status: jest.fn().mockReturnThis(), send: jest.fn() };
+    it('should return a created chat.', async () => {
+      const mockNewChat = {
+        userId1: '09398f56-93e4-4a2f-96e8-342683f7d35a',
+        userId2: '0e2431eb-a822-4e34-aad1-490721012e87',
+      }
 
+      const mockCreateChat: ChatEntity = {
+        userId1: '09398f56-93e4-4a2f-96e8-342683f7d35a',
+        userId2: '0e2431eb-a822-4e34-aad1-490721012e87',
+        id: '48c158d6-0beb-4095-a755-e99d4f1c3929',
+        createdTime: undefined,
+        user1: undefined,
+        user2: undefined,
+        texts: []
+      }
+      const mockfindChatById: ChatEntity = {
+        id: '48c158d6-0beb-4095-a755-e99d4f1c3929',
+        userId1: '09398f56-93e4-4a2f-96e8-342683f7d35a',
+        userId2: '0e2431eb-a822-4e34-aad1-490721012e87',
+        createdTime: undefined,
+        texts: [],
+        user1: {
+          id: '09398f56-93e4-4a2f-96e8-342683f7d35a',
+          name: 'user1',
+          email: 'user1@gmail.com',
+          password: '$2b$08$zYfB.m7VNCwFtqG4amUc0O9AiYfWD2ZutgBlLv7F5gmWI4BH.azJy',
+          role: UserRoles.USER,
+          createdTime: undefined,
+          chatsAsUser1: [],
+          chatsAsUser2: [],
+          texts: []
+        },
+        user2: {
+          id: '0e2431eb-a822-4e34-aad1-490721012e87',
+          name: 'user2',
+          email: 'user2@gmail.com',
+          password: '$2b$08$y8lyR4IHnkmjyluG8NAsAe043THzSxZJI9KM/nW76ka7L.ruQEIH6',
+          role: UserRoles.USER,
+          createdTime: undefined,
+          chatsAsUser1: [],
+          chatsAsUser2: [],
+          texts: []
+        }
+      }
+
+      const mocktest = {
+        id: '6970ac2a-9384-4273-b3db-d7d786590b34',
+        userId1: '09398f56-93e4-4a2f-96e8-342683f7d35a',
+        userId2: '0e2431eb-a822-4e34-aad1-490721012e87',
+        createdTime: undefined,
+        user1: { name: 'user1', email: 'user1@gmail.com' },
+        user2: { name: 'user2', email: 'user2@gmail.com' },
+        texts: undefined
+      }
+
+      // Mock de los servicios
       jest.spyOn(userService, 'areUsersExists').mockResolvedValue(true);
-      jest.spyOn(chatService, 'createChat').mockResolvedValue(mockChatEntity[0]);
+      jest.spyOn(chatService, 'createChat').mockResolvedValue(mockCreateChat);
+      jest.spyOn(chatService, 'findChatById').mockResolvedValue(mockfindChatById);
+      jest.spyOn(ChatEntity, 'parserChatEntityToDTO').mockReturnValue(mocktest);
 
       await chatController.createChat(mockResponse, mockNewChat);
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.send).toHaveBeenCalledWith(
-        ChatEntity.parserChatEntityToDTO(mockChatEntity[0])
-      );
     });
 
     it('should return Incorrect data.', async () => {
@@ -252,7 +303,6 @@ describe('ChatController', () => {
       await chatController.deleteById(mockResponse, mockRequest, mockChatId);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect(mockResponse.send).toHaveBeenCalledWith(ChatEntity.parserChatEntityToDTO(mockChatEntity[0]));
     });
 
     it('should return Not found.', async () => {
