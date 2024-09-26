@@ -28,6 +28,7 @@ const env = {
   TYPE: process.env.TYPE as "mysql" | "mariadb" | "postgres" | "sqlite" | "mssql",
 }
 
+console.log('env', env);
 
 
 @Module({
