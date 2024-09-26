@@ -35,7 +35,7 @@ export default function ChatMenu() {
 
                     <div className='w-full flex-grow overflow-y-auto'>
                         {isLoading ? (
-                            [...Array(2).keys()].map((res, i) => {
+                            [...Array(2).keys()].map((i) => {
                                 return <SkeletonTheme key={i} baseColor="#202020" highlightColor="#444">
                                     <Skeleton count={1} className='h-20' />
                                 </SkeletonTheme>
@@ -81,7 +81,7 @@ export default function ChatMenu() {
 
                 <div className='w-full h-auto mt-[14rem] overflow-y bg-menu-chats-background'>
                     {isLoading ? (
-                        [...Array(2).keys()].map((res, i) => {
+                        [...Array(2).keys()].map((i) => {
                             return <SkeletonTheme key={i} baseColor="#202020" highlightColor="#444">
                                 <Skeleton count={1} className='h-20' />
                             </SkeletonTheme>

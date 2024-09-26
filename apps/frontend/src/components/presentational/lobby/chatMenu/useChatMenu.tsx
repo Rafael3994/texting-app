@@ -12,7 +12,7 @@ import withReactContent from 'sweetalert2-react-content';
 export default function useChatMenu() {
 
     const [chats, setChats] = useState<ChatDTO[]>([])
-    const [userLogged, setUserLogged] = useState<UserDTO | null>(getUserFromToken())
+    const [userLogged] = useState<UserDTO | null>(getUserFromToken())
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { getChatSelected, deleteChatSelected } = useChatSelectedContext()
 
