@@ -24,8 +24,11 @@ const env = {
   PORT: +process.env.PORT,
   USER_NAME: process.env.USER_NAME,
   PASSWORD: process.env.PASSWORD,
-  DATABASE: process.env.DATABASE
+  DATABASE: process.env.DATABASE,
+  TYPE: process.env.TYPE as "mysql" | "mariadb" | "postgres" | "sqlite" | "mssql",
 }
+
+
 
 @Module({
   imports: [
@@ -45,7 +48,7 @@ const env = {
       rootPath: join(__dirname, '../../', 'frontend/dist'),
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: env.TYPE,
       host: env.HOST,
       port: env.PORT,
       username: env.USER_NAME,
