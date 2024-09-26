@@ -45,9 +45,9 @@ console.log('env', env);
     WebSocketsModule,
     BlacklistRefreshTokenModule,
     ScheduleModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../', 'frontend/dist'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '../../', 'frontend/dist'),
+    // }),
     TypeOrmModule.forRoot({
       type: env.TYPE,
       host: env.HOST,
