@@ -19,6 +19,7 @@ import { WebSocketsModule } from './web-sockets/web-sockets.module';
 
 require('dotenv').config();
 
+const isProduction = !!process.env.URL_DB_RENDER;
 const env = {
   HOST: process.env.HOST,
   PORT: +process.env.PORT,
@@ -26,6 +27,7 @@ const env = {
   PASSWORD: process.env.PASSWORD,
   DATABASE: process.env.DATABASE,
   TYPE: process.env.TYPE as "mysql" | "mariadb" | "postgres" | "sqlite" | "mssql",
+  URL_DB_RENDER: process.env.URL_DB_RENDER,
 }
 
 console.log('env', env);
@@ -49,12 +51,13 @@ console.log('env', env);
     //   rootPath: join(__dirname, '../../', 'frontend/dist'),
     // }),
     TypeOrmModule.forRoot({
+      url: isProduction ? env.URL_DB_RENDER : undefined,
       type: env.TYPE,
-      host: env.HOST,
-      port: env.PORT,
-      username: env.USER_NAME,
-      password: env.PASSWORD,
-      database: env.DATABASE,
+      host: isProduction ? undefined : env.HOST,
+      port: isProduction ? undefined : env.PORT,
+      username: isProduction ? undefined : env.USER_NAME,
+      password: isProduction ? undefined : env.PASSWORD,
+      database: isProduction ? undefined : env.DATABASE,
       entities: [
         UserEntity,
         ChatEntity,
