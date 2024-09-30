@@ -30,8 +30,6 @@ const env = {
   URL_DB_RENDER: process.env.URL_DB_RENDER,
 }
 
-console.log('env', env);
-
 
 @Module({
   imports: [

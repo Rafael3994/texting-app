@@ -70,11 +70,12 @@ export default function Clipboard() {
                         <div className='h-full w-full'>
 
                             <div className="flex flex-col h-full w-full">
-                                <div className="h-full overflow-hidden overflow-y-scroll flex flex-col-reverse pb-24">
+                                <div className="h-full overflow-hidden overflow-y-scroll flex flex-col-reverse bg-black mt-8 mb-24">
                                     <div className='flex flex-col p-10'>
                                         {
                                             isLoading ?
-                                                Array.from({ length: 10 }, () => Math.random() < 0.5).map((res, i) => (
+                                                [...Array.from({ length: 10 }).keys()].map((res, i) => (
+                                                    // Array.from({ length: 10 }, () => Math.random() < 0.5).map((res, i) => (
                                                     <SkeletonTheme key={i} baseColor="#202020" highlightColor="#444">
                                                         <div className={`flex ${res ? 'justify-end' : 'justify-start'} w-full`}>
                                                             <div
