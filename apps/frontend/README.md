@@ -3,7 +3,7 @@ This is the front end of texting-app. Here, we explain all you need to use the f
 
 - [Frontend Texting-App](#frontend-texting-app)
     - [Installation 🚀](#installation-)
-    - [Functionalities 🚀](#functionalities-)
+    - [Functionalities ⚙️](#functionalities-️)
         - [Login Page](#login-page)
         - [Lobby Page](#lobby-page)
           - [(Landscape)](#landscape)
@@ -35,7 +35,7 @@ Start the project.
 npm run dev
 ```
 
-### Functionalities 🚀
+### Functionalities ⚙️
 ```
 http://localhost:5173
 ```

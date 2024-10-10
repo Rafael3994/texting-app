@@ -14,9 +14,14 @@ When the backend and frontend are ready, when can run both servers with the comm
 npm run dev
 ```
 
-### Deploy 🚀
-https://texting-app-frontend.onrender.com/
-
+### Deploy 🔥
+⚠️ ¡WARNING! ⚠️
+It's possible than the backend, it was freezing for inactivity, please, first open the backend and wait 60 seconds, after that open the frontend and enjoy the app.
+Thanks for your attention. 😜
+```
+Frontend: https://texting-app-frontend.onrender.com/
+Backend: https://texting-app-backend.onrender.com/
+```
 ### Build with 🔨
 * [Node.js](https://nodejs.org/es/) - Runtime
 * [NestJs](https://nestjs.com/) - Backend Framework
