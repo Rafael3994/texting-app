@@ -7,6 +7,7 @@ import CustomInputText from '@src/components/presentational/form/CustomInputText
 import { isTokensInLocalStorage } from '@src/service/auth.service'
 import { Navigate } from 'react-router-dom';
 import { UserCreatedDTO } from '@src/dtos/User.created.dto';
+import NotificacionSuccesful from '@src/components/NotificacionSuccesful';
 
 
 export interface IFormLogin {
@@ -33,7 +34,8 @@ export default function LoginPage() {
         handleChangeLogin,
         handleRegister,
         handleChangeRegister,
-        handleChangeForm
+        handleChangeForm,
+        handleIsBackendTurnOn
     } = useLogin()
 
     const cardLogin = () => {
@@ -97,6 +99,7 @@ export default function LoginPage() {
             :
             <div className='flex justify-center items-center flex-col' >
                 <NotificacionError />
+                <NotificacionSuccesful />
                 <header className='h-56 w-full bg-main-green flex justify-center items-center'>
                     <div className="h-1/6 w-3/6 md:w-3/6 lg:w-6/12 xl:w-4/12">
                         <div className='flex flex-row items-center h-full w-full'>
@@ -112,7 +115,7 @@ export default function LoginPage() {
                         :
                         cardRegister()
                 }
-
+                <button className='mt-8 text-text-background' onClick={handleIsBackendTurnOn}>Check if the backend is turned on</button>
             </div>
     )
 }

@@ -85,3 +85,10 @@ export const getUserFromToken = (): UserDTO | null => {
     }
     return null;
 }
+
+export const isBackendTurnedOn = async (): Promise<{ status: number, data: boolean }> => {
+    const res = await axiosInstance.get(
+        `/test`,
+    );
+    return { status: res.status, data: res.data }
+};
