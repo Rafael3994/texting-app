@@ -19,22 +19,22 @@ let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
-    getHello() {
-        return this.appService.getHello();
+    isBackendTurnedOn() {
+        return this.appService.isBackendTurnedOn();
     }
 };
 __decorate([
     (0, swagger_1.ApiExcludeEndpoint)(),
     (0, public_decorator_1.Public)(),
-    (0, common_1.Get)(),
-    openapi.ApiResponse({ status: 200, type: String }),
+    (0, common_1.Get)(''),
+    openapi.ApiResponse({ status: 200, type: Boolean }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
-], AppController.prototype, "getHello", null);
+    __metadata("design:returntype", Boolean)
+], AppController.prototype, "isBackendTurnedOn", null);
 AppController = __decorate([
     (0, swagger_1.ApiTags)(''),
-    (0, common_1.Controller)(),
+    (0, common_1.Controller)('/test'),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);
 exports.AppController = AppController;
