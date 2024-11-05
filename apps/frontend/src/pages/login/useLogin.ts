@@ -1,5 +1,5 @@
 import { toastErrorToShow } from "@src/components/NotificacionError";
-import { logIn, saveTokensInLocalStorage } from "@src/service/auth.service";
+import { isBackendTurnedOn, logIn, saveTokensInLocalStorage } from "@src/service/auth.service";
 import { useNavigate } from "react-router-dom";
 import { IFormLogin } from "./Login";
 import { useTokensContext } from "@src/context/token/useTokensContext";
@@ -7,6 +7,7 @@ import { useState } from "react";
 import { registerUser } from "@src/service/user.service";
 import { UserCreatedDTO } from "@src/dtos/User.created.dto";
 import { AuthDTO } from "@src/dtos/Auth.dto";
+import { toastSuccesfulToShow } from "@src/components/NotificacionSuccesful";
 
 export function useLogin() {
     const navigate = useNavigate();
@@ -42,6 +43,16 @@ export function useLogin() {
             name: '',
         })
         setIsShowLogin(!isShowLogin)
+    }
+
+    const handleIsBackendTurnOn = async () => {
+        try {
+            const {status, data} = await isBackendTurnedOn();
+            if (status === 200 && data) return toastSuccesfulToShow('THE BACKEND IS TURNED ON 🚀');
+            return toastErrorToShow(`THE BACKEND IS TURNED OFF`);
+        } catch (error) {
+            return toastErrorToShow(`THE BACKEND IS TURNED OFF`);
+        }
     }
 
     const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -159,6 +170,7 @@ export function useLogin() {
         isShowLogin,
         handleRegister,
         handleChangeRegister,
-        handleChangeForm
+        handleChangeForm,
+        handleIsBackendTurnOn
     }
 }
