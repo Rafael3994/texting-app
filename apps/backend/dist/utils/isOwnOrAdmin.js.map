@@ -1,1 +1,0 @@
-{"version":3,"file":"isOwnOrAdmin.js","sourceRoot":"","sources":["../../src/utils/isOwnOrAdmin.ts"],"names":[],"mappings":";;;AACA,4DAAyD;AAElD,MAAM,YAAY,GAAG,CAAC,UAAmB,EAAE,MAAc,EAAW,EAAE;IACzE,IAAI,UAAU,CAAC,IAAI,KAAK,uBAAS,CAAC,KAAK,EAAE;QACrC,OAAO,IAAI,CAAC;KACf;SAAM;QACH,OAAO,UAAU,CAAC,EAAE,KAAK,MAAM,CAAC;KACnC;AACL,CAAC,CAAA;AANY,QAAA,YAAY,gBAMxB"}
